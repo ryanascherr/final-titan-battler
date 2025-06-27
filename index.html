@@ -8,14 +8,17 @@
     <title>Document</title>
 </head>
 <body>
-    <div class="champion-container js_titan-container">
-        <div class="champion-holder__health js_titan-health"></div>
-        <button class="champion-holder__btn js_titan-roll-btn">Roll</div>
+    <div class="fight-container js_fight-container">
+        <div class="champion-container js_titan-container">
+            <div class="champion-holder__health js_titan-health"></div>
+            <button class="champion-holder__btn js_titan-roll-btn">Roll</button>
+        </div>
+        <div class="champion-container js_challenger-container">
+            <div class="champion-holder__health js_challenger-health"></div>
+            <button class="champion-holder__btn js_challenger-roll-btn">Roll</button>
+        </div>
     </div>
-    <div class="champion-container js_challenger-container">
-        <div class="champion-holder__health js_challenger-health"></div>
-        <button class="champion-holder__btn js_challenger-roll-btn">Roll</div>
-    </div>
+    <button class="js_start-fight-btn">Start Fight</button>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

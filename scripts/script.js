@@ -15,7 +15,6 @@ let firstFighter;
 let secondFighter;
 let opponent;
 
-
 class Champion {
     constructor(name, flavorText, maxHealth, speed, armor, attack1, attack2, attack3, attack4, isTitan) {
         this.name = name;
@@ -35,6 +34,10 @@ class Champion {
         this.isTitan = isTitan;
         this.isAlive = true;
         this.isCharged = false;
+        this.countersBlue = false;
+        this.countersGreen = false;
+        this.countersYellow = false;
+        this.countersRed = false;
     }
     takeDamage(damage) {
         if (this.armor != 0 && damage >= this.armor) {
@@ -43,6 +46,9 @@ class Champion {
         }
 
         this.currentHealth -= damage;
+        if (this.currentHealth < 0) {
+            this.currentHealth = 0;
+        }
         console.log(this.name + " takes " + damage + " damage.");
         console.log(this.name + " has " + this.currentHealth + " health remaining.");
 
@@ -52,7 +58,7 @@ class Champion {
         }
 
         if (!this.isAlive) {
-            this.die(index);
+            this.die();
         }
 
         this.takeDamageSpecific(damage);
@@ -119,23 +125,39 @@ class Champion {
     }
     attack1() {
         console.log(this.name + " rolled their BLUE attack.");
-        console.log(this.name + " attacks " + opponent.name + " for " + this.attack1Damage + " damage!");
-        opponent.takeDamage(this.attack1Damage);
+        if (opponent.countersBlue) {
+            opponent.counter();
+        } else {
+            console.log(this.name + " attacks " + opponent.name + " for " + this.attack1Damage + " damage!");
+            opponent.takeDamage(this.attack1Damage);
+        }
     }
     attack2() {
         console.log(this.name + " rolled their GREEN attack.");
-        console.log(this.name + " attacks " + opponent.name + " for " + this.attack2Damage + " damage!");
-        opponent.takeDamage(this.attack2Damage);
+        if (opponent.countersGreen) {
+            opponent.counter();
+        } else {
+            console.log(this.name + " attacks " + opponent.name + " for " + this.attack2Damage + " damage!");
+            opponent.takeDamage(this.attack2Damage);
+        }
     }
     attack3() {
         console.log(this.name + " rolled their YELLOW attack.");
-        console.log(this.name + " attacks " + opponent.name + " for " + this.attack3Damage + " damage!");
-        opponent.takeDamage(this.attack3Damage);
+        if (opponent.countersYellow) {
+            opponent.counter();
+        } else {
+            console.log(this.name + " attacks " + opponent.name + " for " + this.attack3Damage + " damage!");
+            opponent.takeDamage(this.attack3Damage);
+        }
     }
     attack4() {
         console.log(this.name + " rolled their RED attack.");
-        console.log(this.name + " attacks " + opponent.name + " for " + this.attack4Damage + " damage!");
-        opponent.takeDamage(this.attack4Damage);
+        if (opponent.countersRed) {
+            opponent.counter();
+        } else {
+            console.log(this.name + " attacks " + opponent.name + " for " + this.attack4Damage + " damage!");
+            opponent.takeDamage(this.attack4Damage);
+        }
     }
     charge() {
         console.log(this.name + " rolled a CHARGE.");
@@ -145,7 +167,8 @@ class Champion {
             this.rollDie();
         } else {
             console.log(this.name + " activated their ultimate ability!");
-            // activateUltimate();
+            this.activateUltimate();
+            this.isCharged = false;
         }
     }
     miss() {
@@ -154,101 +177,179 @@ class Champion {
     activateUltimate() {
 
     }
+    counter() {
+        console.log(this.name + " counters the attack! Nothing happens.")
+    }
     endFight(index) {
 
     }
-    die(index) {
-
+    die() {
+        console.log(this.name + " has died. ");
     }
-}
+};
 
-class Titan extends Champion {};
+class CursedPirate extends Champion {
+    attack2() {
+        super.attack2();
+        console.log(this.name + " is rolling again...");
+        this.rollDie();
+    }
+    activateUltimate() {
+        this.isInUltimateForm = true;
+        this.attack4();
+    }
+};
+let cursedPirateObject = champions[9];
+let cursedPirate = new CursedPirate(cursedPirateObject.name, cursedPirateObject.flavorText, cursedPirateObject.health, cursedPirateObject.speed, cursedPirateObject.armor, cursedPirateObject.attack1, cursedPirateObject.attack2, cursedPirateObject.attack3, cursedPirateObject.attack4, true);
 
-// let abc = new Titan("name","flavor",10,8,0,1,2,3,4,false);
-// abc.rollDie() {
-//     console.log("abc");
-// }
-// console.log(abc);
+class CrimsonKnight extends Champion {
+    activateUltimate() {
+        this.isInUltimateForm = true;
+        this.attack2();
+    }
+    attack1() {
+        super.attack1();
+        if (this.isInUltimateForm) {
+            console.log(this.name + " is rolling again because of their Ultimate Form.")
+            this.rollDie();
+        }
+    }
+    attack2() {
+        super.attack2();
+        if (this.isInUltimateForm) {
+            console.log(this.name + " is rolling again because of their Ultimate Form.")
+            this.rollDie();
+        }
+    }
+};
+let crimsonKnightObject = champions[10];
+let crimsonKnight = new CrimsonKnight(crimsonKnightObject.name, crimsonKnightObject.flavorText, crimsonKnightObject.health, crimsonKnightObject.speed, crimsonKnightObject.armor, crimsonKnightObject.attack1, crimsonKnightObject.attack2, crimsonKnightObject.attack3, crimsonKnightObject.attack4, true);
 
-makeTitan()
-function makeTitan() {
-    let length = champions.length;
-    let randomNumber = Math.floor(Math.random() * length);
-    randomNumber = 10;
-    let titanObject = champions[randomNumber];
-    titan = new Titan(titanObject.name, titanObject.flavorText, titanObject.health, titanObject.speed, titanObject.armor, titanObject.attack1, titanObject.attack2, titanObject.attack3, titanObject.attack4, true);
-    $(".js_titan-container").prepend(`<img style="max-width: 100%;" src="./img/champion_crimson_knight.jpg">`);
+class Fang extends Champion {
+    attack1() {
+        let healthBeforeAttack = opponent.currentHealth;
+        super.attack1();
+        let healthAfterAttack = opponent.currentHealth;
+        let differenceInHealth = healthBeforeAttack - healthAfterAttack;
+
+        if (differenceInHealth > 0) {
+            this.drainHealth(differenceInHealth);
+        }
+    }
+    attack2() {
+        let healthBeforeAttack = opponent.currentHealth;
+        super.attack2();
+        let healthAfterAttack = opponent.currentHealth;
+        let differenceInHealth = healthBeforeAttack - healthAfterAttack;
+
+        if (differenceInHealth > 0) {
+            this.drainHealth(differenceInHealth);
+        }
+    }
+    attack3() {
+        let healthBeforeAttack = opponent.currentHealth;
+        super.attack3();
+        let healthAfterAttack = opponent.currentHealth;
+        let differenceInHealth = healthBeforeAttack - healthAfterAttack;
+
+        if (differenceInHealth > 0) {
+            this.drainHealth(differenceInHealth);
+        }
+    }
+    attack4() {
+        let healthBeforeAttack = opponent.currentHealth;
+        super.attack4();
+        let healthAfterAttack = opponent.currentHealth;
+        let differenceInHealth = healthBeforeAttack - healthAfterAttack;
+
+        if (differenceInHealth > 0) {
+            this.drainHealth(differenceInHealth);
+        }
+    }
+    drainHealth(differenceInHealth) {
+        this.currentHealth += differenceInHealth;
+        if (this.currentHealth > this.maxHealth) {
+            this.currentHealth = this.maxHealth;
+        }
+        console.log(this.name + " gained " + differenceInHealth + " health from DRAIN. " + this.name + "'s current health is " + this.currentHealth + ".");
+        this.updateHealth();
+    }
+    activateUltimate() {
+        console.log(this.name + " attacks " + opponent.name + " for " + 10 + " damage!");
+        let healthBeforeAttack = opponent.currentHealth;
+        opponent.takeDamage(10);
+        let healthAfterAttack = opponent.currentHealth;
+        let differenceInHealth = healthBeforeAttack - healthAfterAttack;
+
+        if (differenceInHealth > 0) {
+            this.drainHealth(differenceInHealth);
+        }
+    }
+};
+let fangObject = champions[30];
+let fang = new Fang(fangObject.name, fangObject.flavorText, fangObject.health, fangObject.speed, fangObject.armor, fangObject.attack1, fangObject.attack2, fangObject.attack3, fangObject.attack4, true);
+
+class Hunter extends Champion {
+    startFight() {
+        if (!this.isTitan) {
+            console.log(this.name + " is the challenger. Their damage and speed are increased!");
+            this.attack1Damage +=3;
+            this.attack2Damage +=3;
+            this.attack3Damage +=3;
+            this.attack4Damage +=3;
+            this.speed += 3;
+        };
+    }
+    attack2() {
+        super.attack2();
+        console.log(this.name + " is rolling again...");
+        this.rollDie();
+    }
+};
+let hunterObject = champions[7];
+let hunter = new Hunter(hunterObject.name, hunterObject.flavorText, hunterObject.health, hunterObject.speed, hunterObject.armor, hunterObject.attack1, hunterObject.attack2, hunterObject.attack3, hunterObject.attack4, true);
+
+class Impulse extends Champion {
+    attack1() {
+        super.attack1();
+        console.log(this.name + " is rolling again...");
+        this.rollDie();
+    }
+    attack2() {
+        super.attack2();
+        console.log(this.name + " is rolling again...");
+        this.rollDie();
+    }
+    activateUltimate() {
+        this.attack3();
+        this.attack4();
+    }
+};
+let impulseObject = champions[37];
+let impulse = new Impulse(impulseObject.name, impulseObject.flavorText, impulseObject.health, impulseObject.speed, impulseObject.armor, impulseObject.attack1, impulseObject.attack2, impulseObject.attack3, impulseObject.attack4, true);
+
+titan = impulse;
+challenger = cursedPirate;
+
+titan.isTitan = true;
+challenger.isTitan = false;
+
+displayChampions();
+function displayChampions() {
+    let titanName = titan.name;
+    titanName = titanName.toLowerCase();
+    titanName = titanName.replace(/ /g, "_");
+    $(".js_titan-container").prepend(`<img class="champion-holder__card" src="./img/champion_${titanName}.jpg">`);
     for (let i = 0; i < titan.maxHealth; i++) {
-        $(".js_titan-health").append(`<img style="width: 25px;" src="./img/icons/icon_health.png">`);
+        $(".js_titan-health").append(`<img class="champion-holder__health-icon" src="./img/icons/icon_health.png">`);
     }
-}
 
-makeChallenger()
-function makeChallenger() {
-    let length = champions.length;
-    let randomNumber = Math.floor(Math.random() * length);
-    randomNumber = 30;
-    let challengerObject = champions[randomNumber];
-    // challenger = new Titan(challengerObject.name, challengerObject.flavorText, challengerObject.health, challengerObject.speed, challengerObject.armor, challengerObject.attack1, challengerObject.attack2, challengerObject.attack3, challengerObject.attack4, false);
-
-    class Fang extends Champion {
-        attack1() {
-            let healthBeforeAttack = opponent.currentHealth;
-            super.attack1();
-            let healthAfterAttack = opponent.currentHealth;
-            let differenceInHealth = healthBeforeAttack - healthAfterAttack;
-
-            if (differenceInHealth > 0) {
-                this.drainHealth(differenceInHealth);
-            }
-        }
-        attack2() {
-            let healthBeforeAttack = opponent.currentHealth;
-            super.attack2();
-            let healthAfterAttack = opponent.currentHealth;
-            let differenceInHealth = healthBeforeAttack - healthAfterAttack;
-
-            if (differenceInHealth > 0) {
-                this.drainHealth(differenceInHealth);
-            }
-        }
-        attack3() {
-            let healthBeforeAttack = opponent.currentHealth;
-            super.attack3();
-            let healthAfterAttack = opponent.currentHealth;
-            let differenceInHealth = healthBeforeAttack - healthAfterAttack;
-
-            if (differenceInHealth > 0) {
-                this.drainHealth(differenceInHealth);
-            }
-        }
-        attack4() {
-            let healthBeforeAttack = opponent.currentHealth;
-            super.attack4();
-            let healthAfterAttack = opponent.currentHealth;
-            let differenceInHealth = healthBeforeAttack - healthAfterAttack;
-
-            if (differenceInHealth > 0) {
-                this.drainHealth(differenceInHealth);
-            }
-        }
-        drainHealth(differenceInHealth) {
-            this.currentHealth += differenceInHealth;
-            if (this.currentHealth > this.maxHealth) {
-                this.currentHealth = this.maxHealth;
-            }
-            console.log(this.name + " gained " + differenceInHealth + " health from DRAIN. " + this.name + "'s current health is " + this.currentHealth + ".");
-            this.updateHealth();
-        }
-    };
-
-    let fang = new Fang(challengerObject.name, challengerObject.flavorText, challengerObject.health, challengerObject.speed, challengerObject.armor, challengerObject.attack1, challengerObject.attack2, challengerObject.attack3, challengerObject.attack4, false);
-
-    challenger = fang;
-
-    $(".js_challenger-container").prepend(`<img style="max-width: 100%;" src="./img/champion_fang.jpg">`);
+    let challengerName = challenger.name;
+    challengerName = challengerName.toLowerCase();
+    challengerName = challengerName.replace(/ /g, "_");
+    $(".js_challenger-container").prepend(`<img class="champion-holder__card" src="./img/champion_${challengerName}.jpg">`);
     for (let i = 0; i < challenger.maxHealth; i++) {
-        $(".js_challenger-health").append(`<img style="width: 25px;" src="./img/icons/icon_health.png">`);
+        $(".js_challenger-health").append(`<img class="champion-holder__health-icon" src="./img/icons/icon_health.png">`);
     }
 }
 
@@ -260,67 +361,16 @@ $(".js_challenger-roll-btn").on('click', function() {
     challenger.rollDie();
 });
 
-startFight();
-function startFight() {
-    determineHigherSpeed();
-    // firstFighter.startOfFight();
-    // secondFighter.startOfFight();
-}
-
-function determineHigherSpeed() {
-
-    if (titan.speed > challenger.speed) {
-        titan.isFirst = true;
-        firstFighter = titan;
-        secondFighter = challenger;
+$(".js_start-fight-btn").on('click', function() {
+    console.log("The fight has begun!");
+    if (challenger.speed >= titan.speed) {
+        challenger.startFight();
+        titan.startFight();
     } else {
-        challenger.isFirst = true;
-        firstFighter = challenger;
-        secondFighter = titan;
+        titan.startFight();
+        challenger.startFight();
     }
-}
+});
 
 console.log("Titan", titan);
 console.log("Challenger", challenger);
-
-// class Titan extends Champion {
-//     startOfFight() {
-//         console.log("Sobeck!");
-//     }
-//     takeDamageSpecific(damage) {
-//         console.log(this.name + " uses Nile's Fury and deals damage back!")
-//         challenger.takeDamage(damage);
-//     }
-// }
-
-// let titan = new Sobek("Sobek", "Arisen from his Slumber", 10, 1, 0, 1, 1, 1, 3);
-
-class CrimsonKnight extends Champion {
-    startOfFight() {
-        console.log("Crimson Knight!");
-    }
-}
-
-// challenger = new CrimsonKnight("Crimson Knight", "Firewalk with me", 8, 3, 1, 3, 4, 5, 6);
-
-// console.log(challenger);
-
-
-// console.log(titan);
-// console.log(challenger);
-
-// sobek.takeDamageSpecific();
-
-// let firstFighter;
-// let secondFighter;
-
-// startRound();
-function startRound() {
-    // let dieRoll = getRandomNumber();
-    // console.log(dieRoll);
-    firstFighter.rollDie();
-}
-
-function rollDie() {
-    return Math.floor(Math.random() * 6) + 1;
-}
