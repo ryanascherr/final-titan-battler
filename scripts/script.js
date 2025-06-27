@@ -38,31 +38,43 @@ class Champion {
         this.countersGreen = false;
         this.countersYellow = false;
         this.countersRed = false;
+        this.powerTokens = 0;
+        this.armorTokens = 0;
+        this.actionTokens = 0;
+        this.poisonTokens = 0;
+        this.dodgeTokens = 0;
     }
     takeDamage(damage) {
-        if (this.armor != 0 && damage >= this.armor) {
-            damage -= this.armor;
+        let totalArmor = this.armor + this.armorTokens;
+        if (totalArmor != 0 && damage >= 0) {
+            damage -= totalArmor;
             console.log(this.name + "'s armor reduced incoming damage by " + this.armor + ".");
         }
 
-        this.currentHealth -= damage;
-        if (this.currentHealth < 0) {
-            this.currentHealth = 0;
-        }
-        console.log(this.name + " takes " + damage + " damage.");
-        console.log(this.name + " has " + this.currentHealth + " health remaining.");
+        if (this.dodgeTokens > 0) {
+            console.log(this.name + " used a Dodge Token to avoid the attack.");
+            this.dodgeTokens -= 1;
+        } else {
+            this.currentHealth -= damage;
+            if (this.currentHealth < 0) {
+                this.currentHealth = 0;
+            }
+            console.log(this.name + " takes " + damage + " damage.");
+            console.log(this.name + " has " + this.currentHealth + " health remaining.");
 
-        if (this.currentHealth <= 0) {
-            this.currentHealth = 0;
-            this.isAlive = false;
+            if (this.currentHealth <= 0) {
+                this.currentHealth = 0;
+                this.isAlive = false;
+            }
+
+            if (!this.isAlive) {
+                this.die();
+            }
+
+            this.takeDamageSpecific(damage);
+            this.updateHealth();
         }
 
-        if (!this.isAlive) {
-            this.die();
-        }
-
-        this.takeDamageSpecific(damage);
-        this.updateHealth();
     }
     updateHealth() {
         if (this.isTitan) {
@@ -85,7 +97,7 @@ class Champion {
 
         if (this.currentHealth > this.maxHealth) this.currentHealth = this.maxHealth;
         
-        console.log(this.name + " gained " + health + " health. " + this.name + "'s current health is " + this.currentHealth + "/" + this.maxHealth + ".");
+        console.log(this.name + " gains " + health + " health. " + this.name + "'s current health is " + this.currentHealth + "/" + this.maxHealth + ".");
     }
     startFight(index) {
 
@@ -122,14 +134,19 @@ class Champion {
         if (dieRoll == 6) {
             this.miss();
         }
+
+        if (this.actionTokens === 0) return;
+
+
     }
     attack1() {
         console.log(this.name + " rolled their BLUE attack.");
         if (opponent.countersBlue) {
             opponent.counter();
         } else {
-            console.log(this.name + " attacks " + opponent.name + " for " + this.attack1Damage + " damage!");
-            opponent.takeDamage(this.attack1Damage);
+            let totalDamage = this.attack1Damage + this.powerTokens;
+            console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage!");
+            opponent.takeDamage(totalDamage);
         }
     }
     attack2() {
@@ -137,8 +154,9 @@ class Champion {
         if (opponent.countersGreen) {
             opponent.counter();
         } else {
-            console.log(this.name + " attacks " + opponent.name + " for " + this.attack2Damage + " damage!");
-            opponent.takeDamage(this.attack2Damage);
+            let totalDamage = this.attack2Damage + this.powerTokens;
+            console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage!");
+            opponent.takeDamage(totalDamage);
         }
     }
     attack3() {
@@ -146,8 +164,9 @@ class Champion {
         if (opponent.countersYellow) {
             opponent.counter();
         } else {
-            console.log(this.name + " attacks " + opponent.name + " for " + this.attack3Damage + " damage!");
-            opponent.takeDamage(this.attack3Damage);
+            let totalDamage = this.attack3Damage + this.powerTokens;
+            console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage!");
+            opponent.takeDamage(totalDamage);
         }
     }
     attack4() {
@@ -155,8 +174,9 @@ class Champion {
         if (opponent.countersRed) {
             opponent.counter();
         } else {
-            console.log(this.name + " attacks " + opponent.name + " for " + this.attack4Damage + " damage!");
-            opponent.takeDamage(this.attack4Damage);
+            let totalDamage = this.attack4Damage + this.powerTokens;
+            console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage!");
+            opponent.takeDamage(totalDamage);
         }
     }
     charge() {
@@ -179,6 +199,34 @@ class Champion {
     }
     counter() {
         console.log(this.name + " counters the attack! Nothing happens.")
+    }
+    drainHealth(differenceInHealth) {
+        this.currentHealth += differenceInHealth;
+        if (this.currentHealth > this.maxHealth) {
+            this.currentHealth = this.maxHealth;
+        }
+        console.log(this.name + " gains " + differenceInHealth + " health from DRAIN. " + this.name + "'s current health is " + this.currentHealth + ".");
+        this.updateHealth();
+    }
+    gainPowerTokens(number) {
+        console.log(this.name + " gains " + number + " Power Token(s).");
+        this.powerTokens += number;
+    }
+    gainPoisonTokens(number) {
+        console.log(this.name + " gains " + number + " Poison Token(s).");
+        this.poisonTokens += number;
+    }
+    gainDodgeTokens(number) {
+        console.log(this.name + " gains " + number + " Dodge Token(s).");
+        this.dodgeTokens += number;
+    }
+    gainActionTokens(number) {
+        console.log(this.name + " gains " + number + " Action Token(s).");
+        this.actionTokens += number;
+    }
+    gainArmorTokens(number) {
+        console.log(this.name + " gains " + number + " Armor Token(s).");
+        this.armorTokens += number;
     }
     endFight(index) {
 
@@ -266,18 +314,11 @@ class Fang extends Champion {
             this.drainHealth(differenceInHealth);
         }
     }
-    drainHealth(differenceInHealth) {
-        this.currentHealth += differenceInHealth;
-        if (this.currentHealth > this.maxHealth) {
-            this.currentHealth = this.maxHealth;
-        }
-        console.log(this.name + " gained " + differenceInHealth + " health from DRAIN. " + this.name + "'s current health is " + this.currentHealth + ".");
-        this.updateHealth();
-    }
     activateUltimate() {
-        console.log(this.name + " attacks " + opponent.name + " for " + 10 + " damage!");
+        let totalDamage = 10 + this.powerTokens;
+        console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage!");
         let healthBeforeAttack = opponent.currentHealth;
-        opponent.takeDamage(10);
+        opponent.takeDamage(totalDamage);
         let healthAfterAttack = opponent.currentHealth;
         let differenceInHealth = healthBeforeAttack - healthAfterAttack;
 
@@ -328,8 +369,174 @@ class Impulse extends Champion {
 let impulseObject = champions[37];
 let impulse = new Impulse(impulseObject.name, impulseObject.flavorText, impulseObject.health, impulseObject.speed, impulseObject.armor, impulseObject.attack1, impulseObject.attack2, impulseObject.attack3, impulseObject.attack4, true);
 
-titan = impulse;
-challenger = cursedPirate;
+class SandWyrm extends Champion {
+    activateUltimate() {
+        this.isInUltimateForm = true;
+        this.speed = 10;
+        this.attack1Damage = 20;
+        this.attack1();
+    }
+};
+let sandWyrmObject = champions[26];
+let sandWyrm = new SandWyrm(sandWyrmObject.name, sandWyrmObject.flavorText, sandWyrmObject.health, sandWyrmObject.speed, sandWyrmObject.armor, sandWyrmObject.attack1, sandWyrmObject.attack2, sandWyrmObject.attack3, sandWyrmObject.attack4, true);
+
+class SteelForce extends Champion {
+    takeDamage(damage) {
+        let totalArmor = this.armor + this.armorTokens;
+        if (totalArmor != 0 && damage >= 0) {
+            damage -= totalArmor;
+            console.log(this.name + "'s armor reduced incoming damage by " + this.armor + ".");
+        }
+
+        if (damage > 0) {
+            damage = 1;
+            console.log(this.name + " reduced damage taken to 1.")
+        }
+
+        if (this.dodgeTokens > 0) {
+            console.log(this.name + " used a Dodge Token to avoid the attack.");
+            this.dodgeTokens -= 1;
+        } else {
+            this.currentHealth -= damage;
+            if (this.currentHealth < 0) {
+                this.currentHealth = 0;
+            }
+            console.log(this.name + " takes " + damage + " damage.");
+            console.log(this.name + " has " + this.currentHealth + " health remaining.");
+
+            if (this.currentHealth <= 0) {
+                this.currentHealth = 0;
+                this.isAlive = false;
+            }
+
+            if (!this.isAlive) {
+                this.die();
+            }
+
+            this.takeDamageSpecific(damage);
+            this.updateHealth();
+        }
+    }
+    activateUltimate() {
+        let healthBeforeAttack = opponent.currentHealth;
+        let totalDamage = 4 + this.powerTokens;
+        console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage!");
+        opponent.takeDamage(totalDamage);
+        let healthAfterAttack = opponent.currentHealth;
+        let differenceInHealth = healthBeforeAttack - healthAfterAttack;
+
+        if (differenceInHealth > 0) {
+            this.drainHealth(differenceInHealth);
+        }
+    }
+};
+let steelForceObject = champions[33];
+let steelForce = new SteelForce(steelForceObject.name, steelForceObject.flavorText, steelForceObject.health, steelForceObject.speed, steelForceObject.armor, steelForceObject.attack1, steelForceObject.attack2, steelForceObject.attack3, steelForceObject.attack4, true);
+
+class Sobek extends Champion {
+    takeDamage(damage) {
+        if (this.armor != 0 && damage >= this.armor) {
+            damage -= this.armor;
+            console.log(this.name + "'s armor reduced incoming damage by " + this.armor + ".");
+        }
+
+        this.currentHealth -= damage;
+        if (this.currentHealth < 0) {
+            this.currentHealth = 0;
+        }
+        console.log(this.name + " takes " + damage + " damage.");
+        console.log(this.name + " has " + this.currentHealth + " health remaining.");
+
+        if (this.currentHealth <= 0) {
+            this.currentHealth = 0;
+            this.isAlive = false;
+        }
+
+        if (!this.isAlive) {
+            this.die();
+        } else {
+            this.takeDamageSpecific(damage);
+        }
+        this.updateHealth();
+    }
+    takeDamageSpecific(damage) {
+        if (this.isTitan) {
+            opponent = challenger;
+        } else {
+            opponent = titan;
+        }
+
+        console.log(this.name + " uses Nile's Fury to deal " + damage + " back to " + opponent.name + ".");
+        opponent.takeDamage(damage);
+    }
+    activateUltimate() {
+        let healthBeforeAttack = opponent.currentHealth;
+        let totalDamage = 6 + this.powerTokens;
+        console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage!");
+        opponent.takeDamage(totalDamage);
+        let healthAfterAttack = opponent.currentHealth;
+        let differenceInHealth = healthBeforeAttack - healthAfterAttack;
+
+        if (differenceInHealth > 0) {
+            this.drainHealth(differenceInHealth);
+        }
+    }
+    attack4() {
+        let healthBeforeAttack = opponent.currentHealth;
+        super.attack4();
+        let healthAfterAttack = opponent.currentHealth;
+        let differenceInHealth = healthBeforeAttack - healthAfterAttack;
+
+        if (differenceInHealth > 0) {
+            this.drainHealth(differenceInHealth);
+        }
+    }
+};
+let sobekObject = champions[12];
+let sobek = new Sobek(sobekObject.name, sobekObject.flavorText, sobekObject.health, sobekObject.speed, steelForceObject.armor, sobekObject.attack1, sobekObject.attack2, sobekObject.attack3, sobekObject.attack4, true);
+
+class TinyTerror extends Champion {
+    attack2() {
+        super.attack2();
+        console.log(this.name + " is rolling again...");
+        this.rollDie();
+    }
+    attack3() {
+        super.attack3();
+        console.log(this.name + " is rolling again...");
+        this.rollDie();
+    }
+    activateUltimate() {
+        let healthBeforeAttack = opponent.currentHealth;
+        let totalDamage = 8 + this.powerTokens;
+        console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage!");
+        opponent.takeDamage(totalDamage);
+        let healthAfterAttack = opponent.currentHealth;
+        let differenceInHealth = healthBeforeAttack - healthAfterAttack;
+
+        if (differenceInHealth > 0) {
+            this.drainHealth(differenceInHealth);
+        }
+
+        this.gainPowerTokens(1);
+    }
+};
+let tinyTerrorObject = champions[36];
+let tinyTerror = new TinyTerror(tinyTerrorObject.name, tinyTerrorObject.flavorText, tinyTerrorObject.health, tinyTerrorObject.speed, tinyTerrorObject.armor, tinyTerrorObject.attack1, tinyTerrorObject.attack2, tinyTerrorObject.attack3, tinyTerrorObject.attack4, true);
+
+class NeoLeonidas extends Champion {
+    countersRed = true;
+    activateUltimate() {
+        this.isInUltimateForm = true;
+        this.countersYellow = true;
+        this.attack1();
+    }
+};
+let neoLeonidasObject = champions[14];
+let neoLeonidas = new NeoLeonidas(neoLeonidasObject.name, neoLeonidasObject.flavorText, neoLeonidasObject, neoLeonidasObject.speed, neoLeonidasObject.armor, neoLeonidasObject.attack1, neoLeonidasObject.attack2, neoLeonidasObject.attack3, neoLeonidasObject.attack4, true);
+
+titan = tinyTerror;
+challenger = neoLeonidas;
 
 titan.isTitan = true;
 challenger.isTitan = false;
