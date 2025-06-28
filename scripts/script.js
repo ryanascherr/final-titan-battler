@@ -41,6 +41,7 @@ class Champion {
         this.powerTokens = 0;
         this.armorTokens = 0;
         this.actionTokens = 0;
+        this.actionTokensUsed = 0;
         this.poisonTokens = 0;
         this.dodgeTokens = 0;
     }
@@ -80,12 +81,12 @@ class Champion {
         if (this.isTitan) {
             $(".js_titan-health").empty();
             for (let i = 0; i < this.currentHealth; i++) {
-                $(".js_titan-health").append(`<img style="width: 25px;" src="./img/icons/icon_health.png">`);
+                $(".js_titan-health").append(`<img class="champion-holder__health-icon" src="./img/icons/icon_health.png">`);
             }
         } else {
             $(".js_challenger-health").empty();
             for (let i = 0; i < this.currentHealth; i++) {
-                $(".js_challenger-health").append(`<img style="width: 25px;" src="./img/icons/icon_health.png">`);
+                $(".js_challenger-health").append(`<img class="champion-holder__health-icon" src="./img/icons/icon_health.png">`);
             }
         }
     }
@@ -100,15 +101,32 @@ class Champion {
         console.log(this.name + " gains " + health + " health. " + this.name + "'s current health is " + this.currentHealth + "/" + this.maxHealth + ".");
     }
     startFight(index) {
-
     }
     startTurn(index) {
+        console.log("-----START OF " + this.name.toUpperCase() + "'S TURN-----");
+        if (this.poisonTokens === 0) return;
 
+        this.currentHealth -= this.poisonTokens;
+        if (this.currentHealth < 0) {
+            this.currentHealth = 0;
+        }
+        console.log(this.name + " takes " + this.poisonTokens + " damage from Poison.")
+        console.log(this.name + " has " + this.currentHealth + " health remaining.");
+
+        if (this.currentHealth <= 0) {
+            this.currentHealth = 0;
+            this.isAlive = false;
+        }
+
+        if (!this.isAlive) {
+            this.die();
+        }
+
+        this.updateHealth();
     }
     rollDie() {
         let dieRoll = Math.floor(Math.random() * 6) + 1;
-        console.log("------------");
-        console.log(this.name + " is rolling their die...");
+        console.log("---ROLLING DIE---");
 
         if (this.isTitan) {
             opponent = challenger;
@@ -134,10 +152,6 @@ class Champion {
         if (dieRoll == 6) {
             this.miss();
         }
-
-        if (this.actionTokens === 0) return;
-
-
     }
     attack1() {
         console.log(this.name + " rolled their BLUE attack.");
@@ -227,6 +241,16 @@ class Champion {
     gainArmorTokens(number) {
         console.log(this.name + " gains " + number + " Armor Token(s).");
         this.armorTokens += number;
+    }
+    reset() {
+        this.actionTokensUsed = 0;
+    }
+    defeated() {
+        console.log(this.name + " is Defeated.");
+        this.currentHealth = 0;
+        this.isAlive = false;
+        this.updateHealth();
+        this.die();
     }
     endFight(index) {
 
@@ -535,8 +559,48 @@ class NeoLeonidas extends Champion {
 let neoLeonidasObject = champions[14];
 let neoLeonidas = new NeoLeonidas(neoLeonidasObject.name, neoLeonidasObject.flavorText, neoLeonidasObject, neoLeonidasObject.speed, neoLeonidasObject.armor, neoLeonidasObject.attack1, neoLeonidasObject.attack2, neoLeonidasObject.attack3, neoLeonidasObject.attack4, true);
 
-titan = tinyTerror;
-challenger = neoLeonidas;
+class Cerberus extends Champion {
+    startFight() {
+        super.startFight();
+        this.gainActionTokens(1);
+    }
+    attack4() {
+        super.attack4();
+        console.log(this.name + " is rolling again...");
+        this.rollDie();
+    }
+    activateUltimate() {
+        opponent.defeated();
+    }
+};
+let cerberusObject = champions[27];
+let cerberus = new Cerberus(cerberusObject.name, cerberusObject.flavorText, cerberusObject.health, cerberusObject.speed, cerberusObject.armor, cerberusObject.attack1, cerberusObject.attack2, cerberusObject.attack3, cerberusObject.attack4, true);
+
+class Gunslinger extends Champion {
+    startFight() {
+        super.startFight();
+        if (this.isTitan) {
+            opponent = challenger;
+        } else {
+            opponent = titan;
+        }
+        console.log(this.name + " uses Quick Draw and deals 3 damage.")
+        opponent.takeDamage(3);
+    }
+    attack2() {
+        super.attack2();
+        console.log(this.name + " is rolling again...");
+        this.rollDie();
+    }
+    activateUltimate() {
+        opponent.defeated();
+    }
+};
+let gunslingerObject = champions[19];
+let gunslinger = new Gunslinger(gunslingerObject.name, gunslingerObject.flavorText, gunslingerObject.health, gunslingerObject.speed, gunslingerObject.armor, gunslingerObject.attack1, gunslingerObject.attack2, gunslingerObject.attack3, gunslingerObject.attack4, true);
+
+titan = cerberus;
+challenger = gunslinger;
 
 titan.isTitan = true;
 challenger.isTitan = false;
@@ -561,15 +625,23 @@ function displayChampions() {
 }
 
 $(".js_titan-roll-btn").on('click', function() {
-    titan.rollDie();
+    titan.reset();
+    titan.startTurn();
+    for (let i = 0; i <= titan.actionTokens; i++) {
+        titan.rollDie();
+    }
 });
 
 $(".js_challenger-roll-btn").on('click', function() {
-    challenger.rollDie();
+    challenger.reset();
+    challenger.startTurn();
+    for (let i = 0; i <= challenger.actionTokens; i++) {
+        challenger.rollDie();
+    }
 });
 
 $(".js_start-fight-btn").on('click', function() {
-    console.log("The fight has begun!");
+    console.log("-------START OF FIGHT-------");
     if (challenger.speed >= titan.speed) {
         challenger.startFight();
         titan.startFight();

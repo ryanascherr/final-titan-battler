@@ -4,6 +4,22 @@
   margin: 0;
 }
 
+button {
+  padding: 1rem 0.5rem;
+  border-radius: 10px;
+  outline: none;
+  border: 2px solid #1F1A1E;
+  background-color: #1F1A1E;
+  color: white;
+  width: 150px;
+  font-size: large;
+}
+button:hover {
+  cursor: pointer;
+  background-color: white;
+  color: #1F1A1E;
+}
+
 .fight-container {
   display: flex;
   justify-content: center;
@@ -14,10 +30,16 @@
   width: 50%;
   padding: 1rem;
 }
+.champion-container__btn-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
 
 .champion-holder__card {
   max-width: 100%;
 }
 .champion-holder__health-icon {
-  width: 25px;
+  width: 50px;
+  margin: 0.1rem;
 }/*# sourceMappingURL=main.css.map */
