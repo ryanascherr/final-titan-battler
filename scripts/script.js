@@ -55,6 +55,7 @@ class Champion {
         if (this.dodgeTokens > 0) {
             console.log(this.name + " used a Dodge Token to avoid the attack.");
             this.dodgeTokens -= 1;
+            console.log(this.name + " has " + this.dodgeTokens + " Dodge Token(s).");
         } else {
             this.currentHealth -= damage;
             if (this.currentHealth < 0) {
@@ -159,7 +160,7 @@ class Champion {
             opponent.counter();
         } else {
             let totalDamage = this.attack1Damage + this.powerTokens;
-            console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage!");
+            console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage.");
             opponent.takeDamage(totalDamage);
         }
     }
@@ -169,7 +170,7 @@ class Champion {
             opponent.counter();
         } else {
             let totalDamage = this.attack2Damage + this.powerTokens;
-            console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage!");
+            console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage.");
             opponent.takeDamage(totalDamage);
         }
     }
@@ -179,7 +180,7 @@ class Champion {
             opponent.counter();
         } else {
             let totalDamage = this.attack3Damage + this.powerTokens;
-            console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage!");
+            console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage.");
             opponent.takeDamage(totalDamage);
         }
     }
@@ -189,7 +190,7 @@ class Champion {
             opponent.counter();
         } else {
             let totalDamage = this.attack4Damage + this.powerTokens;
-            console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage!");
+            console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage.");
             opponent.takeDamage(totalDamage);
         }
     }
@@ -200,19 +201,19 @@ class Champion {
             console.log(this.name + " is charged! Rolling again...");
             this.rollDie();
         } else {
-            console.log(this.name + " activated their ultimate ability!");
+            console.log(this.name + " activated their ultimate ability.");
             this.activateUltimate();
             this.isCharged = false;
         }
     }
     miss() {
-        console.log(this.name + " missed!")
+        console.log(this.name + " missed.")
     }
     activateUltimate() {
 
     }
     counter() {
-        console.log(this.name + " counters the attack! Nothing happens.")
+        console.log(this.name + " counters the attack. Nothing happens.")
     }
     drainHealth(differenceInHealth) {
         this.currentHealth += differenceInHealth;
@@ -225,22 +226,27 @@ class Champion {
     gainPowerTokens(number) {
         console.log(this.name + " gains " + number + " Power Token(s).");
         this.powerTokens += number;
+        console.log(this.name + " has " + this.powerTokens + " Power Token(s).");
     }
     gainPoisonTokens(number) {
         console.log(this.name + " gains " + number + " Poison Token(s).");
         this.poisonTokens += number;
+        console.log(this.name + " has " + this.poisonTokens + " Poison Token(s).");
     }
     gainDodgeTokens(number) {
         console.log(this.name + " gains " + number + " Dodge Token(s).");
         this.dodgeTokens += number;
+        console.log(this.name + " has " + this.dodgeTokens + " Dodge Token(s).");
     }
     gainActionTokens(number) {
         console.log(this.name + " gains " + number + " Action Token(s).");
         this.actionTokens += number;
+        console.log(this.name + " has " + this.actionTokens + " Action Token(s).");
     }
     gainArmorTokens(number) {
         console.log(this.name + " gains " + number + " Armor Token(s).");
         this.armorTokens += number;
+        console.log(this.name + " has " + this.armorTokens + " Armor Token(s).");
     }
     reset() {
         this.actionTokensUsed = 0;
@@ -260,6 +266,11 @@ class Champion {
     }
 };
 
+class Dummy extends Champion {
+};
+let dummy = new Dummy("Jade Ogre", "Hit Me!", 100, 5, 0, 1, 2, 3, 4, true);
+
+//TODO: Cursed Pirate Ultimate Form
 class CursedPirate extends Champion {
     attack2() {
         super.attack2();
@@ -340,7 +351,7 @@ class Fang extends Champion {
     }
     activateUltimate() {
         let totalDamage = 10 + this.powerTokens;
-        console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage!");
+        console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage.");
         let healthBeforeAttack = opponent.currentHealth;
         opponent.takeDamage(totalDamage);
         let healthAfterAttack = opponent.currentHealth;
@@ -357,7 +368,7 @@ let fang = new Fang(fangObject.name, fangObject.flavorText, fangObject.health, f
 class Hunter extends Champion {
     startFight() {
         if (!this.isTitan) {
-            console.log(this.name + " is the challenger. Their damage and speed are increased!");
+            console.log(this.name + " is the challenger. Their damage and speed are increased.");
             this.attack1Damage +=3;
             this.attack2Damage +=3;
             this.attack3Damage +=3;
@@ -444,7 +455,7 @@ class SteelForce extends Champion {
     activateUltimate() {
         let healthBeforeAttack = opponent.currentHealth;
         let totalDamage = 4 + this.powerTokens;
-        console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage!");
+        console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage.");
         opponent.takeDamage(totalDamage);
         let healthAfterAttack = opponent.currentHealth;
         let differenceInHealth = healthBeforeAttack - healthAfterAttack;
@@ -496,7 +507,7 @@ class Sobek extends Champion {
     activateUltimate() {
         let healthBeforeAttack = opponent.currentHealth;
         let totalDamage = 6 + this.powerTokens;
-        console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage!");
+        console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage.");
         opponent.takeDamage(totalDamage);
         let healthAfterAttack = opponent.currentHealth;
         let differenceInHealth = healthBeforeAttack - healthAfterAttack;
@@ -533,7 +544,7 @@ class TinyTerror extends Champion {
     activateUltimate() {
         let healthBeforeAttack = opponent.currentHealth;
         let totalDamage = 8 + this.powerTokens;
-        console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage!");
+        console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage.");
         opponent.takeDamage(totalDamage);
         let healthAfterAttack = opponent.currentHealth;
         let differenceInHealth = healthBeforeAttack - healthAfterAttack;
@@ -584,7 +595,7 @@ class Gunslinger extends Champion {
         } else {
             opponent = titan;
         }
-        console.log(this.name + " uses Quick Draw and deals 3 damage.")
+        console.log(this.name + " uses Quick Draw and deals 3 damage.");
         opponent.takeDamage(3);
     }
     attack2() {
@@ -599,8 +610,161 @@ class Gunslinger extends Champion {
 let gunslingerObject = champions[19];
 let gunslinger = new Gunslinger(gunslingerObject.name, gunslingerObject.flavorText, gunslingerObject.health, gunslingerObject.speed, gunslingerObject.armor, gunslingerObject.attack1, gunslingerObject.attack2, gunslingerObject.attack3, gunslingerObject.attack4, true);
 
-titan = cerberus;
-challenger = gunslinger;
+class Acranydra extends Champion {
+    attack1() {
+        console.log(this.name + " rolled their BLUE attack.");
+        opponent.gainPoisonTokens(1);
+    }
+    attack2() {
+        console.log(this.name + " rolled their GREEN attack.");
+        opponent.gainPoisonTokens(1);
+        console.log(this.name + " is rolling again...");
+        this.rollDie();
+    }
+    activateUltimate() {
+        opponent.gainPoisonTokens(4);
+    }
+};
+let acranydraObject = champions[41];
+let acranydra = new Acranydra(acranydraObject.name, acranydraObject.flavorText, acranydraObject.health, acranydraObject.speed, acranydraObject.armor, acranydraObject.attack1, acranydraObject.attack2, acranydraObject.attack3, gunslingerObject.attack4, true);
+
+class Azurian extends Champion {
+    countersGreen = true;
+    startFight() {
+        this.gainDodgeTokens(1);
+    }
+    attack1() {
+        super.attack1();
+        console.log(this.name + " is rolling again...");
+        this.rollDie();
+    }
+    attack4() {
+        let healthBeforeAttack = opponent.currentHealth;
+        super.attack4();
+        let healthAfterAttack = opponent.currentHealth;
+        let differenceInHealth = healthBeforeAttack - healthAfterAttack;
+
+        if (differenceInHealth > 0) {
+            this.drainHealth(differenceInHealth);
+        }
+    }
+    activateUltimate() {
+        this.attack4();
+        this.attack4();
+        this.attack4();
+        this.attack4();
+    }
+};
+let azurianObject = champions[28];
+let azurian = new Azurian(azurianObject.name, azurianObject.flavorText, azurianObject.health, azurianObject.speed, azurianObject.armor, azurianObject.attack1, azurianObject.attack2, azurianObject.attack3, azurianObject.attack4, true);
+
+class JadeOgre extends Champion {
+    startFight() {
+        super.startFight();
+        if (this.isTitan) {
+            opponent = challenger;
+        } else {
+            opponent = titan;
+        }
+        console.log(this.name + " uses Blade Wind and sets " + opponent.name + "'s health to 5.");
+        opponent.currentHealth = 5;
+        opponent.updateHealth();
+    }
+    attack1() {
+        super.attack1();
+        console.log(this.name + " is rolling again...");
+        this.rollDie();
+    }
+    attack4() {
+        let healthBeforeAttack = opponent.currentHealth;
+        super.attack4();
+        let healthAfterAttack = opponent.currentHealth;
+        let differenceInHealth = healthBeforeAttack - healthAfterAttack;
+
+        if (differenceInHealth > 0) {
+            this.drainHealth(differenceInHealth);
+        }
+    }
+    activateUltimate() {
+        opponent.defeated();
+    }
+};
+let jadeOgreObject = champions[22];
+let jadeOgre = new JadeOgre(jadeOgreObject.name, jadeOgreObject.flavorText, jadeOgreObject.health, jadeOgreObject.speed, jadeOgreObject.armor, jadeOgreObject.attack1, jadeOgreObject.attack2, jadeOgreObject.attack3, jadeOgreObject.attack4, true);
+
+//TODO: Change start of fight to start of game
+class TheThreeMusketeers extends Champion {
+    startFight() {
+        super.startFight();
+        this.gainActionTokens(2);
+    }
+    activateUltimate() {
+        this.attack2();
+        this.attack3();
+        this.attack4();
+    }
+};
+let theThreeMusketeersObject = champions[39];
+let theThreeMusketeers = new TheThreeMusketeers(theThreeMusketeersObject.name, theThreeMusketeersObject.flavorText, theThreeMusketeersObject.health, theThreeMusketeersObject.speed, theThreeMusketeersObject.armor, theThreeMusketeersObject.attack1, theThreeMusketeersObject.attack2, theThreeMusketeersObject.attack3, theThreeMusketeersObject.attack4, true);
+
+class WinterWraith extends Champion {
+    startTurn() {
+        super.startTurn();
+        if (this.isTitan) {
+            opponent = challenger;
+        } else {
+            opponent = titan;
+        }
+        let damageThreshold = 3;
+        if (this.isInUltimateForm) {
+            damageThreshold = 6;
+        }
+        if (opponent.currentHealth <= damageThreshold) {
+            console.log(this.name + " uses Soul Harvest to defeat " + opponent.name + ".");
+            opponent.defeated();
+        }
+    }
+    activateUltimate() {
+        this.isInUltimateForm = true;
+        this.attack4();
+    }
+};
+let winterWraithObject = champions[8];
+let winterWraith = new WinterWraith(winterWraithObject.name, winterWraithObject.flavorText, winterWraithObject.health, winterWraithObject.speed, winterWraithObject.armor, winterWraithObject.attack1, winterWraithObject.attack2, winterWraithObject.attack3, winterWraithObject.attack4, true);
+
+//TODO: Weird ultimate interaction with charging
+class ArchangelGabriel extends Champion {
+    attack1() {
+        console.log(this.name + " rolled their BLUE attack.")
+        this.gainPowerTokens(1);
+        console.log(this.name + " is rolling again...");
+        this.rollDie();
+    }
+    activateUltimate() {
+        this.gainPowerTokens(2);
+        this.isCharged = false;
+        console.log(this.name + " is rolling again...");
+        this.rollDie();
+    }
+};
+let archangelGabrielObject = champions[11];
+let archangelGabriel = new ArchangelGabriel(archangelGabrielObject.name, archangelGabrielObject.flavorText, archangelGabrielObject.health, archangelGabrielObject.speed, archangelGabrielObject.armor, archangelGabrielObject.attack1, archangelGabrielObject.attack2, archangelGabrielObject.attack3, archangelGabrielObject.attack4, true);
+
+class TheGreatAbomination extends Champion {
+    startFight() {
+        this.gainPoisonTokens(1);
+    }
+    activateUltimate() {
+        opponent.defeated();
+        this.poisonTokens = 0;
+        console.log(this.name + " has " + this.poisonTokens + " Poison Token(s).");
+    }
+};
+let theGreatAbominationObject = champions[3];
+let theGreatAbomination = new TheGreatAbomination(theGreatAbominationObject.name, theGreatAbominationObject.flavorText, theGreatAbominationObject.health, theGreatAbominationObject.speed, theGreatAbominationObject.armor, theGreatAbominationObject.attack1, theGreatAbominationObject.attack2, theGreatAbominationObject.attack3, theGreatAbominationObject.attack4, true);
+
+titan = theGreatAbomination;
+challenger = dummy;
 
 titan.isTitan = true;
 challenger.isTitan = false;
