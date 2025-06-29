@@ -29,6 +29,8 @@ button:hover {
 .champion-container {
   width: 50%;
   padding: 1rem;
+  display: flex;
+  flex-direction: column;
 }
 .champion-container__btn-container {
   width: 100%;
@@ -39,7 +41,29 @@ button:hover {
 .champion-holder__card {
   max-width: 100%;
 }
+.champion-holder__health {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 0.5rem 0;
+}
 .champion-holder__health-icon {
   width: 50px;
   margin: 0.1rem;
+}
+.champion-holder__health-icon--lg {
+  width: 75px;
+}
+.champion-holder__charge {
+  width: 100px;
+  margin: 0.5rem 0;
+  filter: brightness(25%);
+}
+
+.js_titan-charge--bright {
+  filter: brightness(100%);
+}
+
+.js_challenger-charge--bright {
+  filter: brightness(100%);
 }/*# sourceMappingURL=main.css.map */

@@ -32,6 +32,8 @@ button {
 .champion-container {
     width: 50%;
     padding: 1rem;
+    display: flex;
+    flex-direction: column;
 
     &__btn-container {
         width: 100%;
@@ -46,8 +48,37 @@ button {
         max-width: 100%;
     }
 
+    &__health {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        padding: .5rem 0;
+    }
+
     &__health-icon {
         width: 50px;
         margin: .10rem;
+
+        &--lg {
+            width: 75px;
+        }
     }
+
+    &__charge {
+        width: 100px;
+        margin: .5rem 0;
+        filter: brightness(25%);
+    }
+}
+
+.js_titan-charge {
+    &--bright {
+            filter: brightness(100%);
+        }
+}
+
+.js_challenger-charge {
+    &--bright {
+            filter: brightness(100%);
+        }
 }
