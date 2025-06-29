@@ -66,4 +66,9 @@ button:hover {
 
 .js_challenger-charge--bright {
   filter: brightness(100%);
+}
+
+.token {
+  height: 50px;
+  margin: 0.1rem;
 }/*# sourceMappingURL=main.css.map */
