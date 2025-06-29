@@ -250,6 +250,15 @@ class Champion {
     activateUltimate() {
 
     }
+    gainUltimateForm() {
+        if (this.isTitan) {
+            $(".js_titan-ultimate").empty();
+            $(".js_titan-ultimate").append(`<img class="token" src="./img/icons/icon_ultimate_token.png">`);
+        } else {
+            $(".js_challenger-ultimate").empty();
+            $(".js_challenger-ultimate").append(`<img class="token" src="./img/icons/icon_ultimate_token.png">`);
+        }
+    }
     counter() {
         console.log(this.name + " counters the attack. Nothing happens.")
     }
@@ -380,17 +389,71 @@ class Champion {
 
 class Dummy extends Champion {
 };
-let dummy = new Dummy("Jade Ogre", "Hit Me!", 100, 5, 0, 1, 2, 3, 4, true);
+let dummy = new Dummy("Mindbug", "Hit Me!", 100, 5, 0, 1, 2, 3, 4, true);
 
-//TODO: Cursed Pirate Ultimate Form
 class CursedPirate extends Champion {
+    attack1() {
+        if (this.isInUltimateForm) {
+            let healthBeforeAttack = opponent.currentHealth;
+            super.attack1();
+            let healthAfterAttack = opponent.currentHealth;
+            let differenceInHealth = healthBeforeAttack - healthAfterAttack;
+
+            if (differenceInHealth > 0) {
+                this.drainHealth(differenceInHealth);
+            }
+        } else {
+            super.attack1();
+        }
+    }
     attack2() {
-        super.attack2();
+        if (this.isInUltimateForm) {
+            let healthBeforeAttack = opponent.currentHealth;
+            super.attack2();
+            let healthAfterAttack = opponent.currentHealth;
+            let differenceInHealth = healthBeforeAttack - healthAfterAttack;
+
+            if (differenceInHealth > 0) {
+                this.drainHealth(differenceInHealth);
+            }
+        } else {
+            super.attack2();
+        }
+
         console.log(this.name + " is rolling again...");
         this.rollDie();
     }
+    attack3() {
+        if (this.isInUltimateForm) {
+            let healthBeforeAttack = opponent.currentHealth;
+            super.attack3();
+            let healthAfterAttack = opponent.currentHealth;
+            let differenceInHealth = healthBeforeAttack - healthAfterAttack;
+
+            if (differenceInHealth > 0) {
+                this.drainHealth(differenceInHealth);
+            }
+        } else {
+            super.attack3();
+        }
+    }
+    attack4() {
+        if (this.isInUltimateForm) {
+            let healthBeforeAttack = opponent.currentHealth;
+            super.attack4();
+            let healthAfterAttack = opponent.currentHealth;
+            let differenceInHealth = healthBeforeAttack - healthAfterAttack;
+
+            if (differenceInHealth > 0) {
+                this.drainHealth(differenceInHealth);
+            }
+        } else {
+            super.attack4();
+        }
+    }
     activateUltimate() {
         this.isInUltimateForm = true;
+        this.gainUltimateForm();
         this.attack4();
     }
 };
@@ -400,6 +463,7 @@ let cursedPirate = new CursedPirate(cursedPirateObject.name, cursedPirateObject.
 class CrimsonKnight extends Champion {
     activateUltimate() {
         this.isInUltimateForm = true;
+        this.gainUltimateForm();
         this.attack2();
     }
     attack1() {
@@ -477,6 +541,7 @@ class Fang extends Champion {
 let fangObject = champions[30];
 let fang = new Fang(fangObject.name, fangObject.flavorText, fangObject.health, fangObject.speed, fangObject.armor, fangObject.attack1, fangObject.attack2, fangObject.attack3, fangObject.attack4, true);
 
+//TODO: Make ultimate
 class Hunter extends Champion {
     startFight() {
         if (!this.isTitan) {
@@ -519,6 +584,7 @@ let impulse = new Impulse(impulseObject.name, impulseObject.flavorText, impulseO
 class SandWyrm extends Champion {
     activateUltimate() {
         this.isInUltimateForm = true;
+        this.gainUltimateForm();
         this.speed = 10;
         this.attack1Damage = 20;
         this.attack1();
@@ -581,6 +647,7 @@ class SteelForce extends Champion {
 let steelForceObject = champions[33];
 let steelForce = new SteelForce(steelForceObject.name, steelForceObject.flavorText, steelForceObject.health, steelForceObject.speed, steelForceObject.armor, steelForceObject.attack1, steelForceObject.attack2, steelForceObject.attack3, steelForceObject.attack4, true);
 
+//TODO: Update take damage
 class Sobek extends Champion {
     takeDamage(damage) {
         if (this.armor != 0 && damage >= this.armor) {
@@ -676,6 +743,7 @@ class NeoLeonidas extends Champion {
     countersRed = true;
     activateUltimate() {
         this.isInUltimateForm = true;
+        this.gainUltimateForm();
         this.countersYellow = true;
         this.attack1();
     }
@@ -839,6 +907,7 @@ class WinterWraith extends Champion {
     }
     activateUltimate() {
         this.isInUltimateForm = true;
+        this.gainUltimateForm();
         this.attack4();
     }
 };
@@ -871,6 +940,18 @@ class TheGreatAbomination extends Champion {
         opponent.defeated();
         this.poisonTokens = 0;
         console.log(this.name + " has " + this.poisonTokens + " Poison Token(s).");
+
+        if (this.isTitan) {
+            $(".js_titan-tokens-poison").empty();
+            for (let i = 0; i < this.poisonTokens; i++) {
+                $(".js_titan-tokens-poison").append(`<img class="token" src="./img/icons/icon_poison_token.png">`);
+            }
+        } else {
+            $(".js_challenger-tokens-poison").empty();
+            for (let i = 0; i < this.poisonTokens; i++) {
+                $(".js_challenger-tokens-poison").append(`<img class="token" src="./img/icons/icon_poison_token.png">`);
+            }
+        }
     }
 };
 let theGreatAbominationObject = champions[3];
@@ -923,6 +1004,7 @@ class Dragonbane extends Champion {
     }
     activateUltimate() {
         this.isInUltimateForm = true;
+        this.gainUltimateForm();
         let healthBeforeAttack = opponent.currentHealth;
         let damage = 10 + this.powerTokens;
         console.log(this.name + " uses Essence Drain to attack " + opponent.name + " for " + damage + " damage.")
@@ -1100,6 +1182,7 @@ class UglyDuckling extends Champion {
     }
     activateUltimate() {
         this.isInUltimateForm = true;
+        this.gainUltimateForm();
         this.attack1();
     }
     win() {
@@ -1112,7 +1195,7 @@ class UglyDuckling extends Champion {
 let uglyDucklingObject = champions[20];
 let uglyDuckling = new UglyDuckling(uglyDucklingObject.name, uglyDucklingObject.flavorText, uglyDucklingObject.health, uglyDucklingObject.speed, uglyDucklingObject.armor, uglyDucklingObject.attack1, uglyDucklingObject.attack2, uglyDucklingObject.attack3, uglyDucklingObject.attack4, true);
 
-titan = uglyDuckling;
+titan = theGreatAbomination;
 challenger = dummy;
 
 titan.isTitan = true;
