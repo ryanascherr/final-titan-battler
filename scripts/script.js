@@ -8,7 +8,7 @@
 // .order('id', { ascending: true });
 // const champions = data;
 // console.log(champions);
-let arrayOfChampions = [];
+// let arrayOfChampions = [];
 // let titan;
 // let challenger;
 let firstFighter;
@@ -19,14 +19,60 @@ let opponent;
 
 import { dummy, acranydra, archangelGabriel, azurian, cerberus, crimsonKnight, cursedPirate, dragonbane, evilDjinn, fang, gunslinger, hornet, hunter, hydra, impulse, jadeOgre, kitsune, kuNan, neoLeonidas, sandWyrm, sobek, steelForce, theGreatAbomination, theThreeMusketeers, tinyTerror, uglyDuckling, winterWraith } from "./champions.js";
 
-export let titan = dummy;
-export let challenger = hornet;
+import { arrayOfChampions } from "./champions.js";
 
-titan.isTitan = true;
-challenger.isTitan = false;
+export let titan;
+export let challenger;
 
-displayChampions();
+// let titan;
+// let challenger;
+
+// titan.isTitan = true;
+// challenger.isTitan = false;
+
+populateDropdowns();
+function populateDropdowns() {
+    arrayOfChampions.forEach(function(champion, index) {
+        let championName = champion.name;
+        $("#titan-select").append(`<option value="${championName}">${championName}</option>`);
+        $("#challenger-select").append(`<option value="${championName}">${championName}</option>`);
+    });
+}
+
+$(".js_select-champions").on('click', function() {
+    let titanName = getTitanName();
+    let challengerName = getChampionName();
+
+    arrayOfChampions.forEach(function(champion, index) {
+        if (champion.name == titanName) {
+            titan = champion;
+            titan.isTitan = true;
+            titan.nameOfPosition = "titan";
+        }
+        if (champion.name == challengerName) {
+            challenger = champion;
+            challenger.isTitan = false;
+            challenger.nameOfPosition = "challenger";
+        }
+    });
+
+    displayChampions();
+});
+
+function getTitanName() {
+    let titanDropdown = $("#titan-select");
+    return titanDropdown.val();
+}
+
+function getChampionName() {
+    let challengerDropdown = $("#challenger-select");
+    return challengerDropdown.val();
+}
+// displayChampions();
 function displayChampions() {
+    console.log("Titan", titan);
+    console.log("Challenger", challenger);
+
     let titanName = titan.name;
     titanName = titanName.toLowerCase();
     titanName = titanName.replace(/ /g, "_");
@@ -88,6 +134,3 @@ $(".js_start-fight-btn").on('click', function() {
         challenger.startFight();
     }
 });
-
-console.log("Titan", titan);
-console.log("Challenger", challenger);

@@ -1,8 +1,7 @@
 import { Champion } from "./champion.js";
-import { titan, challenger } from "./script.js";
 let opponent;
 
-//TODO: Update / clean up drain
+//TODO: Test all drain champions
 
 const supabaseURL = 'https://jjdtikulxocedonohrpf.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpqZHRpa3VseG9jZWRvbm9ocnBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA0OTI1NjEsImV4cCI6MjA1NjA2ODU2MX0.7H56TLX1hFXqCJBgDHRU5Evj7gPtdXYUugtyPBfZQuI';
@@ -10,7 +9,6 @@ const supabaseData = window.supabase.createClient(supabaseURL, supabaseKey);
 const { data, error } = await supabaseData.from('champions').select()
 .order('id', { ascending: true });
 const champions = data;
-console.log(champions);
 
 class Dummy extends Champion {
 };
@@ -66,15 +64,8 @@ class Azurian extends Champion {
         this.rollDie();
     }
     attack4() {
-        opponent = this.identifyOpponent();
-        let healthBeforeAttack = opponent.currentHealth;
-        super.attack4();
-        let healthAfterAttack = opponent.currentHealth;
-        let differenceInHealth = healthBeforeAttack - healthAfterAttack;
-
-        if (differenceInHealth > 0) {
-            this.drainHealth(differenceInHealth);
-        }
+        let drain = true;
+        super.attack4(drain);
     }
     activateUltimate() {
         this.attack4();
@@ -130,31 +121,17 @@ export let crimsonKnight = new CrimsonKnight(crimsonKnightObject.name, crimsonKn
 
 class CursedPirate extends Champion {
     attack1() {
-        opponent = this.identifyOpponent();
         if (this.isInUltimateForm) {
-            let healthBeforeAttack = opponent.currentHealth;
-            super.attack1();
-            let healthAfterAttack = opponent.currentHealth;
-            let differenceInHealth = healthBeforeAttack - healthAfterAttack;
-
-            if (differenceInHealth > 0) {
-                this.drainHealth(differenceInHealth);
-            }
+            let drain = true;
+            super.attack1(drain);
         } else {
             super.attack1();
         }
     }
     attack2() {
-        opponent = this.identifyOpponent();
         if (this.isInUltimateForm) {
-            let healthBeforeAttack = opponent.currentHealth;
-            super.attack2();
-            let healthAfterAttack = opponent.currentHealth;
-            let differenceInHealth = healthBeforeAttack - healthAfterAttack;
-
-            if (differenceInHealth > 0) {
-                this.drainHealth(differenceInHealth);
-            }
+            let drain = true;
+            super.attack2(drain);
         } else {
             super.attack2();
         }
@@ -163,16 +140,9 @@ class CursedPirate extends Champion {
         this.rollDie();
     }
     attack3() {
-        opponent = this.identifyOpponent();
         if (this.isInUltimateForm) {
-            let healthBeforeAttack = opponent.currentHealth;
-            super.attack3();
-            let healthAfterAttack = opponent.currentHealth;
-            let differenceInHealth = healthBeforeAttack - healthAfterAttack;
-
-            if (differenceInHealth > 0) {
-                this.drainHealth(differenceInHealth);
-            }
+            let drain = true;
+            super.attack3(drain);
         } else {
             super.attack3();
         }
@@ -180,14 +150,8 @@ class CursedPirate extends Champion {
     attack4() {
         opponent = this.identifyOpponent();
         if (this.isInUltimateForm) {
-            let healthBeforeAttack = opponent.currentHealth;
-            super.attack4();
-            let healthAfterAttack = opponent.currentHealth;
-            let differenceInHealth = healthBeforeAttack - healthAfterAttack;
-
-            if (differenceInHealth > 0) {
-                this.drainHealth(differenceInHealth);
-            }
+            let drain = true;
+            super.attack4(drain);
         } else {
             super.attack4();
         }
@@ -208,16 +172,10 @@ class Dragonbane extends Champion {
         let mySpeed = this.speed;
         let opponentSpeed = opponent.speed;
         if (mySpeed > opponentSpeed || this.isInUltimateForm) {
-            let healthBeforeAttack = opponent.currentHealth;
+            let drain = true;
             let damage = 10 + this.powerTokens;
             console.log(this.name + " uses Essence Drain to attack " + opponent.name + " for " + damage + " damage.")
-            opponent.takeDamage(damage);
-            let healthAfterAttack = opponent.currentHealth;
-            let differenceInHealth = healthBeforeAttack - healthAfterAttack;
-
-            if (differenceInHealth > 0) {
-                this.drainHealth(differenceInHealth);
-            }
+            opponent.takeDamage(damage, drain);
         } else {
             console.log(this.name + "'s Essence Drain does not activate.")
         }
@@ -228,16 +186,10 @@ class Dragonbane extends Champion {
         opponent = this.identifyOpponent();
         this.isInUltimateForm = true;
         this.gainUltimateForm();
-        let healthBeforeAttack = opponent.currentHealth;
+        let drain = true;
         let damage = 10 + this.powerTokens;
         console.log(this.name + " uses Essence Drain to attack " + opponent.name + " for " + damage + " damage.")
-        opponent.takeDamage(damage);
-        let healthAfterAttack = opponent.currentHealth;
-        let differenceInHealth = healthBeforeAttack - healthAfterAttack;
-
-        if (differenceInHealth > 0) {
-            this.drainHealth(differenceInHealth);
-        }
+        opponent.takeDamage(damage, drain);
     }
 };
 let dragonbaneObject = champions[29];
@@ -250,15 +202,8 @@ class EvilDjinn extends Champion {
         opponent.gainPoisonTokens(1);
     }
     attack2() {
-        opponent = this.identifyOpponent();
-        let healthBeforeAttack = opponent.currentHealth;
-        super.attack2();
-        let healthAfterAttack = opponent.currentHealth;
-        let differenceInHealth = healthBeforeAttack - healthAfterAttack;
-
-        if (differenceInHealth > 0) {
-            this.drainHealth(differenceInHealth);
-        }
+        let drain = true;
+        super.attack2(drain);
     }
     reactToCharge() {
         console.log(this.name + "'s Infernal Pact activates.");
@@ -273,61 +218,28 @@ export let evilDjinn = new EvilDjinn(evilDjinnObject.name, evilDjinnObject.flavo
 
 class Fang extends Champion {
     attack1() {
-        opponent = this.identifyOpponent();
-        let healthBeforeAttack = opponent.currentHealth;
-        super.attack1();
-        let healthAfterAttack = opponent.currentHealth;
-        let differenceInHealth = healthBeforeAttack - healthAfterAttack;
-
-        if (differenceInHealth > 0) {
-            this.drainHealth(differenceInHealth);
-        }
+        let drain = true;
+        super.attack1(drain);
     }
     attack2() {
-        opponent = this.identifyOpponent();
-        let healthBeforeAttack = opponent.currentHealth;
-        super.attack2();
-        let healthAfterAttack = opponent.currentHealth;
-        let differenceInHealth = healthBeforeAttack - healthAfterAttack;
-
-        if (differenceInHealth > 0) {
-            this.drainHealth(differenceInHealth);
-        }
+        let drain = true;
+        super.attack2(drain);
     }
     attack3() {
-        opponent = this.identifyOpponent();
-        let healthBeforeAttack = opponent.currentHealth;
-        super.attack3();
-        let healthAfterAttack = opponent.currentHealth;
-        let differenceInHealth = healthBeforeAttack - healthAfterAttack;
-
-        if (differenceInHealth > 0) {
-            this.drainHealth(differenceInHealth);
-        }
+        let drain = true;
+        super.attack3(drain);
     }
     attack4() {
-        opponent = this.identifyOpponent();
-        let healthBeforeAttack = opponent.currentHealth;
-        super.attack4();
-        let healthAfterAttack = opponent.currentHealth;
-        let differenceInHealth = healthBeforeAttack - healthAfterAttack;
-
-        if (differenceInHealth > 0) {
-            this.drainHealth(differenceInHealth);
-        }
+        let drain = true;
+        super.attack4(drain);
     }
     activateUltimate() {
-        opponent = this.identifyOpponent();
         let totalDamage = 10 + this.powerTokens;
-        console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage.");
-        let healthBeforeAttack = opponent.currentHealth;
-        opponent.takeDamage(totalDamage);
-        let healthAfterAttack = opponent.currentHealth;
-        let differenceInHealth = healthBeforeAttack - healthAfterAttack;
+        let drain = true;
 
-        if (differenceInHealth > 0) {
-            this.drainHealth(differenceInHealth);
-        }
+        console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage.");
+
+        opponent.takeDamage(totalDamage, drain);
     }
 };
 let fangObject = champions[30];
@@ -357,6 +269,7 @@ export let gunslinger = new Gunslinger(gunslingerObject.name, gunslingerObject.f
 class Hornet extends Champion {
     startFight() {
         this.gainDodgeTokens(2);
+        this.gain
     }
     attack2() {
         console.log(this.name + " rolls their GREEN attack.")
@@ -383,11 +296,11 @@ class Hunter extends Champion {
     startFight() {
         if (!this.isTitan) {
             console.log(this.name + " is the challenger. Their damage and speed are increased.");
-            this.attack1Damage +=3;
-            this.attack2Damage +=3;
-            this.attack3Damage +=3;
-            this.attack4Damage +=3;
-            this.speed += 3;
+            this.attack1Damage = 4;
+            this.attack2Damage = 4;
+            this.attack3Damage = 6;
+            this.attack4Damage = 7;
+            this.speed = 8;
         };
     }
     attack2() {
@@ -456,15 +369,8 @@ class JadeOgre extends Champion {
         this.rollDie();
     }
     attack4() {
-        opponent = this.identifyOpponent();
-        let healthBeforeAttack = opponent.currentHealth;
-        super.attack4();
-        let healthAfterAttack = opponent.currentHealth;
-        let differenceInHealth = healthBeforeAttack - healthAfterAttack;
-
-        if (differenceInHealth > 0) {
-            this.drainHealth(differenceInHealth);
-        }
+        let drain = true;
+        super.attack4(drain);
     }
     activateUltimate() {
         opponent = this.identifyOpponent();
@@ -500,16 +406,10 @@ export let kitsune = new Kitsune(kitsuneObject.name, kitsuneObject.flavorText, k
 class KuNan extends Champion {
     activateUltimate() {
         opponent = this.identifyOpponent();
-        let healthBeforeAttack = opponent.currentHealth;
+        let drain = true;
         let damage = 6 + this.powerTokens;
         console.log(this.name + " attacks " + opponent.name + " for " + damage + " damage.")
-        opponent.takeDamage(damage);
-        let healthAfterAttack = opponent.currentHealth;
-        let differenceInHealth = healthBeforeAttack - healthAfterAttack;
-
-        if (differenceInHealth > 0) {
-            this.drainHealth(differenceInHealth);
-        }
+        opponent.takeDamage(damage, drain);
     }
     win() {
         super.win();
@@ -580,33 +480,21 @@ class Sobek extends Champion {
     }
     activateUltimate() {
         opponent = this.identifyOpponent();
-        let healthBeforeAttack = opponent.currentHealth;
+        let drain = true;
         let totalDamage = 6 + this.powerTokens;
         console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage.");
-        opponent.takeDamage(totalDamage);
-        let healthAfterAttack = opponent.currentHealth;
-        let differenceInHealth = healthBeforeAttack - healthAfterAttack;
-
-        if (differenceInHealth > 0) {
-            this.drainHealth(differenceInHealth);
-        }
+        opponent.takeDamage(totalDamage, drain);
     }
     attack4() {
-        opponent = this.identifyOpponent();
-        let healthBeforeAttack = opponent.currentHealth;
-        super.attack4();
-        let healthAfterAttack = opponent.currentHealth;
-        let differenceInHealth = healthBeforeAttack - healthAfterAttack;
-
-        if (differenceInHealth > 0) {
-            this.drainHealth(differenceInHealth);
-        }
+        let drain = true;
+        super.attack4(drain);
     }
 };
 let sobekObject = champions[12];
 export let sobek = new Sobek(sobekObject.name, sobekObject.flavorText, sobekObject.health, sobekObject.speed, sobekObject.armor, sobekObject.attack1, sobekObject.attack2, sobekObject.attack3, sobekObject.attack4, true);
 
 //TODO: Update takeDamage();
+//TODO: Figure out Poison
 class SteelForce extends Champion {
     takeDamage(damage) {
         let totalArmor = this.armor + this.armorTokens;
@@ -646,16 +534,10 @@ class SteelForce extends Champion {
     }
     activateUltimate() {
         opponent = this.identifyOpponent();
-        let healthBeforeAttack = opponent.currentHealth;
+        let drain = true;
         let totalDamage = 4 + this.powerTokens;
         console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage.");
-        opponent.takeDamage(totalDamage);
-        let healthAfterAttack = opponent.currentHealth;
-        let differenceInHealth = healthBeforeAttack - healthAfterAttack;
-
-        if (differenceInHealth > 0) {
-            this.drainHealth(differenceInHealth);
-        }
+        opponent.takeDamage(totalDamage, drain);
     }
 };
 let steelForceObject = champions[33];
@@ -715,16 +597,10 @@ class TinyTerror extends Champion {
     }
     activateUltimate() {
         opponent = this.identifyOpponent();
-        let healthBeforeAttack = opponent.currentHealth;
+        let drain = true;
         let totalDamage = 8 + this.powerTokens;
         console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage.");
-        opponent.takeDamage(totalDamage);
-        let healthAfterAttack = opponent.currentHealth;
-        let differenceInHealth = healthBeforeAttack - healthAfterAttack;
-
-        if (differenceInHealth > 0) {
-            this.drainHealth(differenceInHealth);
-        }
+        opponent.takeDamage(totalDamage, drain);
 
         this.gainPowerTokens(1);
     }
@@ -745,14 +621,8 @@ class UglyDuckling extends Champion {
         } else {
             this.attack1Damage = 2;
         }
-        let healthBeforeAttack = opponent.currentHealth;
-        super.attack1();
-        let healthAfterAttack = opponent.currentHealth;
-        let differenceInHealth = healthBeforeAttack - healthAfterAttack;
-
-        if (differenceInHealth > 0) {
-            this.drainHealth(differenceInHealth);
-        }
+        let drain = true;
+        super.attack1(drain);
     }
     attack2() {
         if (this.currentHealth <= 6) {
@@ -823,3 +693,5 @@ class WinterWraith extends Champion {
 };
 let winterWraithObject = champions[8];
 export let winterWraith = new WinterWraith(winterWraithObject.name, winterWraithObject.flavorText, winterWraithObject.health, winterWraithObject.speed, winterWraithObject.armor, winterWraithObject.attack1, winterWraithObject.attack2, winterWraithObject.attack3, winterWraithObject.attack4, true);
+
+export let arrayOfChampions = [dummy, acranydra, archangelGabriel, azurian, cerberus, crimsonKnight, cursedPirate, dragonbane, evilDjinn, fang, gunslinger, hornet, hunter, hydra, impulse, jadeOgre, kitsune, kuNan, neoLeonidas, sandWyrm, sobek, steelForce, theGreatAbomination, theThreeMusketeers, tinyTerror, uglyDuckling, winterWraith];

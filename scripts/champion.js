@@ -30,78 +30,86 @@ export class Champion {
         this.actionTokensUsed = 0;
         this.poisonTokens = 0;
         this.dodgeTokens = 0;
+        this.nameOfPosition = "";
     }
-    takeDamage(damage) {
+    takeDamage(damage, drain) {
+        damage = this.factorArmor(damage);
+        damage = this.factorDodge(damage);
+
+        this.currentHealth -= damage;
+
+        if (this.currentHealth < 0) {
+            this.currentHealth = 0;
+        }
+
+        this.updateHealthDisplay();
+
+        console.log(this.name + " takes " + damage + " damage.");
+        console.log(this.name + " has " + this.currentHealth + " health remaining.");
+
+        if (drain) {
+            let tempOpponent = "";
+            if (this.isTitan) {
+                tempOpponent = challenger;
+            } else {
+                tempOpponent = titan;
+            }
+            tempOpponent.drainHealth(damage);
+        }
+
+        this.takeDamageSpecific(damage);
+
+        if (this.currentHealth <= 0) {
+            this.isAlive = false;
+        }
+
+        if (!this.isAlive) this.die();
+
+    }
+    takeDamageSpecific(damage) {
+    }
+    factorArmor(damage) {
         let totalArmor = this.armor + this.armorTokens;
         if (totalArmor != 0 && damage >= 0) {
-            damage -= totalArmor;
-            console.log(this.name + "'s armor reduces incoming damage by " + this.armor + ".");
-        }
-
-        if (this.dodgeTokens > 0) {
-            console.log(this.name + " uses a Dodge Token to avoid the attack.");
-            this.dodgeTokens -= 1;
-            console.log(this.name + " has " + this.dodgeTokens + " Dodge Token(s).");
-
-            if (this.isTitan) {
-                $(".js_titan-tokens-dodge").empty();
-                for (let i = 0; i < this.dodgeTokens; i++) {
-                    $(".js_titan-tokens-dodge").append(`<img class="token" src="./img/icons/icon_dodge_token.png">`);
-                }
+            let damageBlocked = 0;
+            if (damage >= totalArmor) {
+                damageBlocked = totalArmor;
             } else {
-                $(".js_challenger-tokens-dodge").empty();
-                for (let i = 0; i < this.dodgeTokens; i++) {
-                    $(".js_challenger-tokens-dodge").append(`<img class="token" src="./img/icons/icon_dodge_token.png">`);
-                }
+                damageBlocked = damage;
             }
-        } else {
-            this.currentHealth -= damage;
-            if (this.currentHealth < 0) {
-                this.currentHealth = 0;
-            }
-            console.log(this.name + " takes " + damage + " damage.");
-            console.log(this.name + " has " + this.currentHealth + " health remaining.");
-
-            if (this.currentHealth <= 0) {
-                this.currentHealth = 0;
-                this.isAlive = false;
-            }
-
-            if (!this.isAlive) {
-                this.die();
-            }
-
-            this.takeDamageSpecific(damage);
-            this.updateHealth();
+            damage -= totalArmor;
+            console.log(this.name + "'s armor reduces incoming damage by " + damageBlocked + ".");
         }
-
+        return damage;
     }
-    updateHealth() {
+    factorDodge(damage) {
+        if (this.dodgeTokens === 0) return damage;
+
+        console.log(this.name + " uses a Dodge Token to avoid the attack.");
+        this.dodgeTokens -= 1;
+        console.log(this.name + " has " + this.dodgeTokens + " Dodge Token(s).");
+        this.updateTokensDisplay("dodge", this.dodgeTokens);
+        damage = 0;
+
+        return damage;
+    }
+    updateHealthDisplay() {
         let numberOfFives = Math.floor(this.currentHealth / 5);
         let numberOfOnes = this.currentHealth % 5;
 
-        if (this.isTitan) {
-            $(".js_titan-health").empty();
-        
-            for (let i = 0; i < numberOfFives; i++) {
-                $(".js_titan-health").append(`<img class="champion-holder__health-icon champion-holder__health-icon--lg" src="./img/icons/icon_health_lg.png">`);
-            }
-            for (let i = 0; i < numberOfOnes; i++) {
-                $(".js_titan-health").append(`<img class="champion-holder__health-icon" src="./img/icons/icon_health.png">`);
-            }
-        } else {
-            $(".js_challenger-health").empty();
-
-            for (let i = 0; i < numberOfFives; i++) {
-                $(".js_challenger-health").append(`<img class="champion-holder__health-icon champion-holder__health-icon--lg" src="./img/icons/icon_health_lg.png">`);
-            }
-            for (let i = 0; i < numberOfOnes; i++) {
-                $(".js_challenger-health").append(`<img class="champion-holder__health-icon" src="./img/icons/icon_health.png">`);
-            }
+        $(`.js_${this.nameOfPosition}-health`).empty();
+        for (let i = 0; i < numberOfFives; i++) {
+            $(`.js_${this.nameOfPosition}-health`).append(`<img class="champion-holder__health-icon champion-holder__health-icon--lg" src="./img/icons/icon_health_lg.png">`);
+        }
+        for (let i = 0; i < numberOfOnes; i++) {
+            $(`.js_${this.nameOfPosition}-health`).append(`<img class="champion-holder__health-icon" src="./img/icons/icon_health.png">`);
         }
     }
-    takeDamageSpecific(damage) {
-
+    updateTokensDisplay(nameOfToken, numberOfTokens) {
+        $(`.js_${this.nameOfPosition}-tokens-${nameOfToken}`).empty();
+        for (let i = 0; i < numberOfTokens; i++) {
+            $(`.js_${this.nameOfPosition}-tokens-${nameOfToken}`).append(`<img class="token" src="./img/icons/icon_${nameOfToken}_token.png">`);
+        }
     }
     gainHealth(health, index) {
         this.currentHealth += health;
@@ -110,7 +118,7 @@ export class Champion {
         
         console.log(this.name + " gains " + health + " health. " + this.name + " has " + this.currentHealth + " remaining.");
 
-        this.updateHealth();
+        this.updateHealthDisplay();
     }
     startFight(index) {
     }
@@ -134,7 +142,7 @@ export class Champion {
             this.die();
         }
 
-        this.updateHealth();
+        this.updateHealthDisplay();
     }
     rollDie() {
         let dieRoll = Math.floor(Math.random() * 6) + 1;
@@ -161,44 +169,44 @@ export class Champion {
             this.miss();
         }
     }
-    attack1() {
+    attack1(drain) {
         console.log(this.name + " rolls their BLUE attack.");
         if (opponent.countersBlue) {
             opponent.counter();
         } else {
             let totalDamage = this.attack1Damage + this.powerTokens;
             console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage.");
-            opponent.takeDamage(totalDamage);
+            opponent.takeDamage(totalDamage, drain);
         }
     }
-    attack2() {
+    attack2(drain) {
         console.log(this.name + " rolls their GREEN attack.");
         if (opponent.countersGreen) {
             opponent.counter();
         } else {
             let totalDamage = this.attack2Damage + this.powerTokens;
             console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage.");
-            opponent.takeDamage(totalDamage);
+            opponent.takeDamage(totalDamage, drain);
         }
     }
-    attack3() {
+    attack3(drain) {
         console.log(this.name + " rolls their YELLOW attack.");
         if (opponent.countersYellow) {
             opponent.counter();
         } else {
             let totalDamage = this.attack3Damage + this.powerTokens;
             console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage.");
-            opponent.takeDamage(totalDamage);
+            opponent.takeDamage(totalDamage, drain);
         }
     }
-    attack4() {
+    attack4(drain) {
         console.log(this.name + " rolls their RED attack.");
         if (opponent.countersRed) {
             opponent.counter();
         } else {
             let totalDamage = this.attack4Damage + this.powerTokens;
             console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage.");
-            opponent.takeDamage(totalDamage);
+            opponent.takeDamage(totalDamage, drain);
         }
     }
     charge() {
@@ -241,109 +249,59 @@ export class Champion {
 
     }
     gainUltimateForm() {
-        if (this.isTitan) {
-            $(".js_titan-ultimate").empty();
-            $(".js_titan-ultimate").append(`<img class="token" src="./img/icons/icon_ultimate_token.png">`);
-        } else {
-            $(".js_challenger-ultimate").empty();
-            $(".js_challenger-ultimate").append(`<img class="token" src="./img/icons/icon_ultimate_token.png">`);
-        }
+        $(`.js_${this.nameOfPosition}-ultimate`).empty();
+        $(`.js_${this.nameOfPosition}-ultimate`).append(`<img class="token" src="./img/icons/icon_ultimate_token.png">`);
     }
     counter() {
         console.log(this.name + " counters the attack. Nothing happens.")
     }
-    drainHealth(differenceInHealth) {
-        this.currentHealth += differenceInHealth;
-        if (this.currentHealth > this.maxHealth) {
-            this.currentHealth = this.maxHealth;
+    drainHealth(number) {
+        let maxHealthToGain = this.maxHealth - this.currentHealth;
+        let healthToAdd = number;
+
+        if (number > maxHealthToGain) {
+            healthToAdd = maxHealthToGain;
         }
-        console.log(this.name + " gains " + differenceInHealth + " health from DRAIN. " + this.name + "'s current health is " + this.currentHealth + ".");
-        this.updateHealth();
+
+        this.currentHealth += healthToAdd;
+
+        console.log(this.name + " gains " + healthToAdd + " health from DRAIN. " + this.name + "'s current health is " + this.currentHealth + ".");
+        this.updateHealthDisplay();
     }
     gainPowerTokens(number) {
         console.log(this.name + " gains " + number + " Power Token(s).");
         this.powerTokens += number;
         console.log(this.name + " has " + this.powerTokens + " Power Token(s).");
 
-        if (this.isTitan) {
-            $(".js_titan-tokens-power").empty();
-            for (let i = 0; i < this.powerTokens; i++) {
-                $(".js_titan-tokens-power").append(`<img class="token" src="./img/icons/icon_power_token.png">`);
-            }
-        } else {
-            $(".js_challenger-tokens-power").empty();
-            for (let i = 0; i < this.powerTokens; i++) {
-                $(".js_challenger-tokens-power").append(`<img class="token" src="./img/icons/icon_power_token.png">`);
-            }
-        }
+        this.updateTokensDisplay("power", this.powerTokens);
     }
     gainPoisonTokens(number) {
         console.log(this.name + " gains " + number + " Poison Token(s).");
         this.poisonTokens += number;
         console.log(this.name + " has " + this.poisonTokens + " Poison Token(s).");
 
-        if (this.isTitan) {
-            $(".js_titan-tokens-poison").empty();
-            for (let i = 0; i < this.poisonTokens; i++) {
-                $(".js_titan-tokens-poison").append(`<img class="token" src="./img/icons/icon_poison_token.png">`);
-            }
-        } else {
-            $(".js_challenger-tokens-poison").empty();
-            for (let i = 0; i < this.poisonTokens; i++) {
-                $(".js_challenger-tokens-poison").append(`<img class="token" src="./img/icons/icon_poison_token.png">`);
-            }
-        }
+        this.updateTokensDisplay("poison", this.poisonTokens);
     }
     gainDodgeTokens(number) {
         console.log(this.name + " gains " + number + " Dodge Token(s).");
         this.dodgeTokens += number;
         console.log(this.name + " has " + this.dodgeTokens + " Dodge Token(s).");
 
-        if (this.isTitan) {
-            $(".js_titan-tokens-dodge").empty();
-            for (let i = 0; i < this.dodgeTokens; i++) {
-                $(".js_titan-tokens-dodge").append(`<img class="token" src="./img/icons/icon_dodge_token.png">`);
-            }
-        } else {
-            $(".js_challenger-tokens-dodge").empty();
-            for (let i = 0; i < this.dodgeTokens; i++) {
-                $(".js_challenger-tokens-dodge").append(`<img class="token" src="./img/icons/icon_dodge_token.png">`);
-            }
-        }
+        this.updateTokensDisplay("dodge", this.dodgeTokens);
     }
     gainActionTokens(number) {
         console.log(this.name + " gains " + number + " Action Token(s).");
         this.actionTokens += number;
         console.log(this.name + " has " + this.actionTokens + " Action Token(s).");
 
-        if (this.isTitan) {
-            $(".js_titan-tokens-action").empty();
-            for (let i = 0; i < this.actionTokens; i++) {
-                $(".js_titan-tokens-action").append(`<img class="token" src="./img/icons/icon_action_token.png">`);
-            }
-        } else {
-            $(".js_challenger-tokens-action").empty();
-            for (let i = 0; i < this.actionTokens; i++) {
-                $(".js_challenger-tokens-action").append(`<img class="token" src="./img/icons/icon_action_token.png">`);
-            }
-        }
+        this.updateTokensDisplay("action", this.actionTokens);
     }
     gainArmorTokens(number) {
         console.log(this.name + " gains " + number + " Armor Token(s).");
         this.armorTokens += number;
         console.log(this.name + " has " + this.armorTokens + " Armor Token(s).");
 
-        if (this.isTitan) {
-            $(".js_titan-tokens-armor").empty();
-            for (let i = 0; i < this.armorTokens; i++) {
-                $(".js_titan-tokens-armor").append(`<img class="token" src="./img/icons/icon_armor_token.png">`);
-            }
-        } else {
-            $(".js_challenger-tokens-armor").empty();
-            for (let i = 0; i < this.armorTokens; i++) {
-                $(".js_challenger-tokens-armor").append(`<img class="token" src="./img/icons/icon_armor_token.png">`);
-            }
-        }
+        this.updateTokensDisplay("armor", this.armorTokens);
     }
     reset() {
         this.actionTokensUsed = 0;
@@ -352,7 +310,7 @@ export class Champion {
         console.log(this.name + " is defeated.");
         this.currentHealth = 0;
         this.isAlive = false;
-        this.updateHealth();
+        this.updateHealthDisplay();
         this.die();
     }
     win () {
