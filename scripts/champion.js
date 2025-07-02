@@ -178,9 +178,14 @@ export class Champion {
     miss() {
         console.log(this.name + " misses.")
     }
-    takeDamage(damage, drain) {
+    takeDamage(damage, drain, isSteelFortress) {
         damage = this.factorArmor(damage);
         damage = this.factorDodge(damage);
+
+        if (damage > 0 && isSteelFortress) {
+            damage = 1;
+            console.log(this.name + "'s Living Fortress reduces damage taken to 1.")
+        }
 
         this.currentHealth -= damage;
 
@@ -191,7 +196,6 @@ export class Champion {
         this.updateHealthDisplay();
 
         console.log(this.name + " takes " + damage + " damage. Their current health is " + this.currentHealth + "/" + this.maxHealth + ".");
-        // console.log(this.name + " has " + this.currentHealth + " health remaining.");
 
         if (drain) {
             let tempOpponent = "";

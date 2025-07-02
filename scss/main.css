@@ -56,6 +56,12 @@ select:hover {
   display: flex;
   flex-direction: column;
 }
+.champion-container--align-right {
+  align-items: flex-end;
+}
+.champion-container--align-left {
+  align-items: flex-start;
+}
 .champion-container__btn-container {
   width: 100%;
   display: flex;
@@ -63,7 +69,8 @@ select:hover {
 }
 
 .champion-holder__card {
-  max-width: 100%;
+  width: 100%;
+  max-width: 400px;
 }
 .champion-holder__health {
   display: flex;

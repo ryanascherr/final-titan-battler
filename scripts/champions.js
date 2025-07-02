@@ -235,6 +235,7 @@ class Fang extends Champion {
         super.attack4(drain);
     }
     activateUltimate() {
+        opponent = this.identifyOpponent();
         let totalDamage = 10 + this.powerTokens;
         let drain = true;
 
@@ -476,43 +477,10 @@ let sobekObject = champions[12];
 export let sobek = new Sobek(sobekObject.name, sobekObject.flavorText, sobekObject.health, sobekObject.speed, sobekObject.armor, sobekObject.attack1, sobekObject.attack2, sobekObject.attack3, sobekObject.attack4, true);
 
 //TODO: Figure out Poison
-//TODO: Can't detect challenger
 class SteelForce extends Champion {
     takeDamage(damage, drain) {
-        damage = this.factorArmor(damage);
-        damage = this.factorDodge(damage);
-
-        if (damage > 0) {
-            damage = 1;
-            console.log(this.name + "'s Living Fortress reduces damage taken to 1.")
-        }
-
-        this.currentHealth -= damage;
-
-        if (this.currentHealth < 0) {
-            this.currentHealth = 0;
-        }
-
-        this.updateHealthDisplay();
-
-        console.log(this.name + " takes " + damage + " damage.");
-        console.log(this.name + " has " + this.currentHealth + " health remaining.");
-
-        if (drain) {
-            let tempOpponent = "";
-            if (this.isTitan) {
-                tempOpponent = challenger;
-            } else {
-                tempOpponent = titan;
-            }
-            tempOpponent.drainHealth(damage);
-        }
-
-        if (this.currentHealth <= 0) {
-            this.isAlive = false;
-        }
-
-        if (!this.isAlive) this.die();
+        let isSteelFortress = true;
+        super.takeDamage(damage, drain, isSteelFortress);
     }
     activateUltimate() {
         opponent = this.identifyOpponent();
