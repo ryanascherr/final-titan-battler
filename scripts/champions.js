@@ -2,6 +2,7 @@ import { Champion } from "./champion.js";
 let opponent;
 
 //TODO: Test all drain champions
+//TODO: Remove all forced roll agains
 
 const supabaseURL = 'https://jjdtikulxocedonohrpf.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpqZHRpa3VseG9jZWRvbm9ocnBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA0OTI1NjEsImV4cCI6MjA1NjA2ODU2MX0.7H56TLX1hFXqCJBgDHRU5Evj7gPtdXYUugtyPBfZQuI';
@@ -291,7 +292,7 @@ class Hornet extends Champion {
 let hornetObject = champions[0];
 export let hornet = new Hornet(hornetObject.name, hornetObject.flavorText, hornetObject.health, hornetObject.speed, hornetObject.armor, hornetObject.attack1, hornetObject.attack2, hornetObject.attack3, hornetObject.attack4, true);
 
-//TODO: Make ultimate, fix numbers so not exponential
+//TODO: Make ultimate
 class Hunter extends Champion {
     startFight() {
         if (!this.isTitan) {
@@ -301,7 +302,13 @@ class Hunter extends Champion {
             this.attack3Damage = 6;
             this.attack4Damage = 7;
             this.speed = 8;
-        };
+        } else {
+            this.attack1Damage = 1;
+            this.attack2Damage = 1;
+            this.attack3Damage = 3;
+            this.attack4Damage = 4;
+            this.speed = 8;
+        }
     }
     attack2() {
         super.attack2();
@@ -312,14 +319,11 @@ class Hunter extends Champion {
 let hunterObject = champions[7];
 export let hunter = new Hunter(hunterObject.name, hunterObject.flavorText, hunterObject.health, hunterObject.speed, hunterObject.armor, hunterObject.attack1, hunterObject.attack2, hunterObject.attack3, hunterObject.attack4, true);
 
-//TODO: Funkiness when gaining action token during ultimate
 class Hydra extends Champion {
     countersRed = true;
     counter() {
         super.counter();
-        console.log(this.name + " gains 1 Action Token.");
-        this.actionTokens += 1;
-        console.log(this.name + " has " + this.actionTokens + " Action Token(s).");
+        this.gainActionTokens(1);
     }
     activateUltimate() {
         opponent = this.identifyOpponent();
@@ -327,9 +331,7 @@ class Hydra extends Champion {
         console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage.");
         opponent.takeDamage(totalDamage);
         if (!opponent.isAlive) {
-            console.log(this.name + " gains 1 Action Token.");
-            this.actionTokens += 1;
-            console.log(this.name + " has " + this.actionTokens + " Action Token(s).");
+            this.gainActionTokens(1);
         }
     }
 };
@@ -361,7 +363,7 @@ class JadeOgre extends Champion {
         opponent = this.identifyOpponent();
         console.log(this.name + " uses Blade Wind and sets " + opponent.name + "'s health to 5.");
         opponent.currentHealth = 5;
-        opponent.updateHealth();
+        opponent.updateHealthDisplay();
     }
     attack1() {
         super.attack1();
@@ -380,6 +382,7 @@ class JadeOgre extends Champion {
 let jadeOgreObject = champions[22];
 export let jadeOgre = new JadeOgre(jadeOgreObject.name, jadeOgreObject.flavorText, jadeOgreObject.health, jadeOgreObject.speed, jadeOgreObject.armor, jadeOgreObject.attack1, jadeOgreObject.attack2, jadeOgreObject.attack3, jadeOgreObject.attack4, true);
 
+//TODO: Charge not showing up
 class Kitsune extends Champion {
     countersBlue = true;
     countersGreen = true;
@@ -446,38 +449,17 @@ class SandWyrm extends Champion {
 let sandWyrmObject = champions[26];
 export let sandWyrm = new SandWyrm(sandWyrmObject.name, sandWyrmObject.flavorText, sandWyrmObject.health, sandWyrmObject.speed, sandWyrmObject.armor, sandWyrmObject.attack1, sandWyrmObject.attack2, sandWyrmObject.attack3, sandWyrmObject.attack4, true);
 
-//TODO: Update take damage
 class Sobek extends Champion {
-    takeDamage(damage) {
-        if (this.armor != 0 && damage >= this.armor) {
-            damage -= this.armor;
-            console.log(this.name + "'s armor reduced incoming damage by " + this.armor + ".");
-        }
+    takeDamage(damage, drain) {
+        super.takeDamage(damage);
 
-        this.currentHealth -= damage;
-        if (this.currentHealth < 0) {
-            this.currentHealth = 0;
-        }
-        console.log(this.name + " takes " + damage + " damage.");
-        console.log(this.name + " has " + this.currentHealth + " health remaining.");
+        if (!this.isAlive) return;
 
-        if (this.currentHealth <= 0) {
-            this.currentHealth = 0;
-            this.isAlive = false;
-        }
-
-        if (!this.isAlive) {
-            this.die();
-        } else {
-            this.takeDamageSpecific(damage);
-        }
-        this.updateHealth();
-    }
-    takeDamageSpecific(damage) {
         opponent = this.identifyOpponent();
         console.log(this.name + " uses Nile's Fury to deal " + damage + " back to " + opponent.name + ".");
         opponent.takeDamage(damage);
     }
+
     activateUltimate() {
         opponent = this.identifyOpponent();
         let drain = true;
@@ -493,44 +475,44 @@ class Sobek extends Champion {
 let sobekObject = champions[12];
 export let sobek = new Sobek(sobekObject.name, sobekObject.flavorText, sobekObject.health, sobekObject.speed, sobekObject.armor, sobekObject.attack1, sobekObject.attack2, sobekObject.attack3, sobekObject.attack4, true);
 
-//TODO: Update takeDamage();
 //TODO: Figure out Poison
+//TODO: Can't detect challenger
 class SteelForce extends Champion {
-    takeDamage(damage) {
-        let totalArmor = this.armor + this.armorTokens;
-        if (totalArmor != 0 && damage >= 0) {
-            damage -= totalArmor;
-            console.log(this.name + "'s armor reduced incoming damage by " + this.armor + ".");
-        }
+    takeDamage(damage, drain) {
+        damage = this.factorArmor(damage);
+        damage = this.factorDodge(damage);
 
         if (damage > 0) {
             damage = 1;
-            console.log(this.name + " reduced damage taken to 1.")
+            console.log(this.name + "'s Living Fortress reduces damage taken to 1.")
         }
 
-        if (this.dodgeTokens > 0) {
-            console.log(this.name + " uses a Dodge Token to avoid the attack.");
-            this.dodgeTokens -= 1;
-        } else {
-            this.currentHealth -= damage;
-            if (this.currentHealth < 0) {
-                this.currentHealth = 0;
-            }
-            console.log(this.name + " takes " + damage + " damage.");
-            console.log(this.name + " has " + this.currentHealth + " health remaining.");
+        this.currentHealth -= damage;
 
-            if (this.currentHealth <= 0) {
-                this.currentHealth = 0;
-                this.isAlive = false;
-            }
-
-            if (!this.isAlive) {
-                this.die();
-            }
-
-            this.takeDamageSpecific(damage);
-            this.updateHealth();
+        if (this.currentHealth < 0) {
+            this.currentHealth = 0;
         }
+
+        this.updateHealthDisplay();
+
+        console.log(this.name + " takes " + damage + " damage.");
+        console.log(this.name + " has " + this.currentHealth + " health remaining.");
+
+        if (drain) {
+            let tempOpponent = "";
+            if (this.isTitan) {
+                tempOpponent = challenger;
+            } else {
+                tempOpponent = titan;
+            }
+            tempOpponent.drainHealth(damage);
+        }
+
+        if (this.currentHealth <= 0) {
+            this.isAlive = false;
+        }
+
+        if (!this.isAlive) this.die();
     }
     activateUltimate() {
         opponent = this.identifyOpponent();
@@ -694,4 +676,4 @@ class WinterWraith extends Champion {
 let winterWraithObject = champions[8];
 export let winterWraith = new WinterWraith(winterWraithObject.name, winterWraithObject.flavorText, winterWraithObject.health, winterWraithObject.speed, winterWraithObject.armor, winterWraithObject.attack1, winterWraithObject.attack2, winterWraithObject.attack3, winterWraithObject.attack4, true);
 
-export let arrayOfChampions = [dummy, acranydra, archangelGabriel, azurian, cerberus, crimsonKnight, cursedPirate, dragonbane, evilDjinn, fang, gunslinger, hornet, hunter, hydra, impulse, jadeOgre, kitsune, kuNan, neoLeonidas, sandWyrm, sobek, steelForce, theGreatAbomination, theThreeMusketeers, tinyTerror, uglyDuckling, winterWraith];
+export let arrayOfChampions = [acranydra, archangelGabriel, azurian, cerberus, crimsonKnight, cursedPirate, dragonbane, evilDjinn, fang, gunslinger, hornet, hunter, hydra, impulse, jadeOgre, kitsune, kuNan, neoLeonidas, sandWyrm, sobek, steelForce, theGreatAbomination, theThreeMusketeers, tinyTerror, uglyDuckling, winterWraith];

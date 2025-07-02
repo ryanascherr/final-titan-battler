@@ -9,16 +9,140 @@
 </head>
 <body>
     <div class="setup">
-        <label for="titan-select">Choose a Titan:</label>
-        <select name="titan-select" id="titan-select">
-        </select>
-        <label for="challenger-select">Choose a Titan:</label>
-        <select name="challenger-select" id="challenger-select">
-        </select>
-        <button class="js_select-champions">Select Champions</button>
+
+        <!-- <div class="dice-container">
+            <div class="cube face-1-low low">
+                <div class="face front">
+                    <img src="./img/icons/icon_attack_blue.png">
+                </div>
+                <div class="face back"></div>
+                <div class="face bottom">
+                    <img src="./img/icons/icon_attack_green.png">
+                </div>
+                <div class="face left">
+                    <img src="./img/icons/icon_attack_yellow.png">
+                </div>
+                <div class="face right">
+                    <img src="./img/icons/icon_attack_red.png">
+                </div>
+                <div class="face top">
+                    <img src="./img/icons/icon_charge.png">
+                </div>
+            </div>
+            <div class="cube face-1-low low">
+                <div class="face front">
+                    <img src="./img/icons/icon_attack_blue.png">
+                </div>
+                <div class="face back"></div>
+                <div class="face bottom">
+                    <img src="./img/icons/icon_attack_green.png">
+                </div>
+                <div class="face left">
+                    <img src="./img/icons/icon_attack_yellow.png">
+                </div>
+                <div class="face right">
+                    <img src="./img/icons/icon_attack_red.png">
+                </div>
+                <div class="face top">
+                    <img src="./img/icons/icon_charge.png">
+                </div>
+            </div>
+            <div class="cube face-1-low low">
+                <div class="face front">
+                    <img src="./img/icons/icon_attack_blue.png">
+                </div>
+                <div class="face back"></div>
+                <div class="face bottom">
+                    <img src="./img/icons/icon_attack_green.png">
+                </div>
+                <div class="face left">
+                    <img src="./img/icons/icon_attack_yellow.png">
+                </div>
+                <div class="face right">
+                    <img src="./img/icons/icon_attack_red.png">
+                </div>
+                <div class="face top">
+                    <img src="./img/icons/icon_charge.png">
+                </div>
+            </div>
+            <div class="cube face-1-low low">
+                <div class="face front">
+                    <img src="./img/icons/icon_attack_blue.png">
+                </div>
+                <div class="face back"></div>
+                <div class="face bottom">
+                    <img src="./img/icons/icon_attack_green.png">
+                </div>
+                <div class="face left">
+                    <img src="./img/icons/icon_attack_yellow.png">
+                </div>
+                <div class="face right">
+                    <img src="./img/icons/icon_attack_red.png">
+                </div>
+                <div class="face top">
+                    <img src="./img/icons/icon_charge.png">
+                </div>
+            </div>
+            <div class="cube face-1-low low">
+                <div class="face front">
+                    <img src="./img/icons/icon_attack_blue.png">
+                </div>
+                <div class="face back"></div>
+                <div class="face bottom">
+                    <img src="./img/icons/icon_attack_green.png">
+                </div>
+                <div class="face left">
+                    <img src="./img/icons/icon_attack_yellow.png">
+                </div>
+                <div class="face right">
+                    <img src="./img/icons/icon_attack_red.png">
+                </div>
+                <div class="face top">
+                    <img src="./img/icons/icon_charge.png">
+                </div>
+            </div>
+        </div> -->
+
+        <!-- <div class="button-container">
+            <button class="roll-btn">Roll!</button>
+        </div> -->
+
+
+        <div class="setup__select-container">
+            <div class="setup__select">
+                <label for="titan-select">Choose a Titan:</label>
+                <select name="titan-select" id="titan-select"></select>
+            </div>
+            <div class="setup__select">
+                <label for="challenger-select">Choose a Titan:</label>
+                <select name="challenger-select" id="challenger-select"></select>
+            </div>
+        </div>
+        <button class="js_select-champions btn btn--lg">Select Champions</button>
     </div>
-    <div class="fight-container js_fight-container">
+    <div class="fight-container js_fight-container hide">
         <div class="champion-container js_titan-container">
+            <div class="roll-container">
+                <img class="champion-holder__charge js_titan-charge" src="./img/icons/icon_charge.png" alt="">
+                <div class="cube js_titan-die js_titan-roll-btn face-1-low low roll-btn">
+                    <div class="face front">
+                        <img src="./img/icons/icon_attack_blue.png">
+                    </div>
+                    <div class="face back"></div>
+                    <div class="face bottom">
+                        <img src="./img/icons/icon_attack_green.png">
+                    </div>
+                    <div class="face left">
+                        <img src="./img/icons/icon_attack_yellow.png">
+                    </div>
+                    <div class="face right">
+                        <img src="./img/icons/icon_attack_red.png">
+                    </div>
+                    <div class="face top">
+                        <img src="./img/icons/icon_charge.png">
+                    </div>
+                </div>
+            </div>
             <div class="champion-holder__health js_titan-health"></div>
             <div class="champion-holder__ultimate js_titan-ultimate"></div>
             <div class="champion-holder__tokens js_titan-tokens">
@@ -28,10 +152,29 @@
                 <div class="champion-holder__tokens-poison js_titan-tokens-poison"></div>
                 <div class="champion-holder__tokens-power js_titan-tokens-power"></div>
             </div>
-            <img class="champion-holder__charge js_titan-charge" src="./img/icons/icon_charge.png" alt="">
-            <button class="champion-holder__btn js_titan-roll-btn">Roll</button>
         </div>
         <div class="champion-container js_challenger-container">
+            <div class="roll-container">
+                <div class="cube js_challenger-die js_challenger-roll-btn face-2-low low roll-btn">
+                    <div class="face front">
+                        <img src="./img/icons/icon_attack_blue.png">
+                    </div>
+                    <div class="face back"></div>
+                    <div class="face bottom">
+                        <img src="./img/icons/icon_attack_green.png">
+                    </div>
+                    <div class="face left">
+                        <img src="./img/icons/icon_attack_yellow.png">
+                    </div>
+                    <div class="face right">
+                        <img src="./img/icons/icon_attack_red.png">
+                    </div>
+                    <div class="face top">
+                        <img src="./img/icons/icon_charge.png">
+                    </div>
+                </div>
+                <img class="champion-holder__charge js_challenger-charge" src="./img/icons/icon_charge.png" alt="">
+            </div>
             <div class="champion-holder__health js_challenger-health"></div>
             <div class="champion-holder__ultimate js_challenger-ultimate"></div>
             <div class="champion-holder__tokens js_challenger-tokens">
@@ -41,13 +184,11 @@
                 <div class="champion-holder__tokens-poison js_challenger-tokens-poison"></div>
                 <div class="champion-holder__tokens-power js_challenger-tokens-power"></div>
             </div>
-            <img class="champion-holder__charge js_challenger-charge" src="./img/icons/icon_charge.png" alt="">
-            <button class="champion-holder__btn js_challenger-roll-btn">Roll</button>
         </div>
     </div>
-    <div class="champion-container__btn-container">
-        <button class="js_start-fight-btn">Start Fight</button>
-    </div>
+    <!-- <div class="champion-container__btn-container js_start-fight-btn-container hide">
+        <button class="js_start-fight-btn btn btn--lg">Start Fight</button>
+    </div> -->
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
