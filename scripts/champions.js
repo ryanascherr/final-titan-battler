@@ -2,8 +2,9 @@ import { Champion } from "./champion.js";
 let opponent;
 
 //TODO: Test all drain champions
-//TODO: Remove all forced roll agains
 //TODO: Counter should stop rerolls
+//TODO: Remove console logs of attack rolls
+//TODO: Manual way to take poison damage? Shouldn't be every roll
 
 const supabaseURL = 'https://jjdtikulxocedonohrpf.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpqZHRpa3VseG9jZWRvbm9ocnBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA0OTI1NjEsImV4cCI6MjA1NjA2ODU2MX0.7H56TLX1hFXqCJBgDHRU5Evj7gPtdXYUugtyPBfZQuI';
@@ -19,12 +20,10 @@ export let dummy = new Dummy("Mindbug", "Hit Me!", 100, 5, 0, 1, 2, 3, 4, true);
 class Acranydra extends Champion {
     attack1() {
         opponent = this.identifyOpponent();
-        console.log(this.name + " rolls their BLUE attack.");
         opponent.gainPoisonTokens(1);
     }
     attack2() {
         opponent = this.identifyOpponent();
-        console.log(this.name + " rolls their GREEN attack.");
         opponent.gainPoisonTokens(1);
         // console.log(this.name + " is rolling again...");
         // this.rollDie();
@@ -40,7 +39,6 @@ export let acranydra = new Acranydra(acranydraObject.name, acranydraObject.flavo
 //TODO: Weird ultimate interaction with charging
 class ArchangelGabriel extends Champion {
     attack1() {
-        console.log(this.name + " rolls their BLUE attack.")
         this.gainPowerTokens(1);
         // console.log(this.name + " is rolling again...");
         // this.rollDie();
@@ -170,7 +168,6 @@ export let cursedPirate = new CursedPirate(cursedPirateObject.name, cursedPirate
 class Dragonbane extends Champion {
     attack1() {
         opponent = this.identifyOpponent();
-        console.log(this.name + " rolls their BLUE attack.");
         let mySpeed = this.speed;
         let opponentSpeed = opponent.speed;
         if (mySpeed > opponentSpeed || this.isInUltimateForm) {
@@ -200,7 +197,6 @@ export let dragonbane = new Dragonbane(dragonbaneObject.name, dragonbaneObject.f
 class EvilDjinn extends Champion {
     attack1() {
         opponent = this.identifyOpponent();
-        console.log(this.name + " rolls their BLUE attack.");
         opponent.gainPoisonTokens(1);
     }
     attack2() {
@@ -275,15 +271,19 @@ class Hornet extends Champion {
         this.gain
     }
     attack2() {
-        console.log(this.name + " rolls their GREEN attack.")
-        if (this.dodgeTokens === 0) {
-            console.log(this.name + "'s Bzzzzzzzzzzzzz activates.");
-            this.gainDodgeTokens(2);
+        opponent = this.identifyOpponent();
+        if (opponent.countersGreen) {
+            opponent.counter();
         } else {
-            console.log(this.name + "'s Bzzzzzzzzzzzzz does not activate.");
+            if (this.dodgeTokens === 0) {
+                console.log(this.name + "'s Bzzzzzzzzzzzzz activates.");
+                this.gainDodgeTokens(2);
+            } else {
+                console.log(this.name + "'s Bzzzzzzzzzzzzz does not activate.");
+            }
+            // console.log("Rolling again...");
+            // this.rollDie();
         }
-        // console.log("Rolling again...");
-        // this.rollDie();
     }
     activateUltimate() {
         opponent = this.identifyOpponent();

@@ -77,23 +77,45 @@ export class Champion {
 
         this.setDie(dieRoll);
 
+        let doesCounter = false;
+
         setTimeout(() => {
             switch (dieRoll) {
                 case 1:
                     console.log(this.name + " rolls their 🟦 attack.");
-                    this.attack1();
+                    doesCounter = this.checkForCounter(opponent.countersBlue);
+                    if (doesCounter) {
+                        opponent.counter();
+                    } else {
+                        this.attack1();
+                    }
                     break;
                 case 2:
                     console.log(this.name + " rolls their 🟩 attack.");
-                    this.attack2();
+                    doesCounter = this.checkForCounter(opponent.countersGreen);
+                    if (doesCounter) {
+                        opponent.counter();
+                    } else {
+                        this.attack2();
+                    }
                     break;
                 case 3:
                     console.log(this.name + " rolls their 🟨 attack.");
-                    this.attack3();
+                    doesCounter = this.checkForCounter(opponent.countersYellow);
+                    if (doesCounter) {
+                        opponent.counter();
+                    } else {
+                        this.attack3();
+                    }
                     break;
                 case 4:
                     console.log(this.name + " rolls their 🟥 attack.");
-                    this.attack4();
+                    doesCounter = this.checkForCounter(opponent.countersRed);
+                    if (doesCounter) {
+                        opponent.counter();
+                    } else {
+                        this.attack4();
+                    }
                     break;
                 case 5:
                     console.log(this.name + " rolls a CHARGE.");
@@ -123,42 +145,33 @@ export class Champion {
             $(die).addClass(`face-${dieRoll}-low`);
         }
     }
-    attack1(drain) {
-        if (opponent.countersBlue) {
-            opponent.counter();
+    checkForCounter(doesCounter) {
+        console.log(doesCounter);
+        if (doesCounter) {
+            return true;
         } else {
-            let totalDamage = this.attack1Damage + this.powerTokens;
-            console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage.");
-            opponent.takeDamage(totalDamage, drain);
+            return false;
         }
+    }
+    attack1(drain) {
+        let totalDamage = this.attack1Damage + this.powerTokens;
+        console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage.");
+        opponent.takeDamage(totalDamage, drain);
     }
     attack2(drain) {
-        if (opponent.countersGreen) {
-            opponent.counter();
-        } else {
-            let totalDamage = this.attack2Damage + this.powerTokens;
-            console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage.");
-            opponent.takeDamage(totalDamage, drain);
-        }
+        let totalDamage = this.attack2Damage + this.powerTokens;
+        console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage.");
+        opponent.takeDamage(totalDamage, drain);
     }
     attack3(drain) {
-        if (opponent.countersYellow) {
-            opponent.counter();
-        } else {
-            let totalDamage = this.attack3Damage + this.powerTokens;
-            console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage.");
-            opponent.takeDamage(totalDamage, drain);
-        }
+        let totalDamage = this.attack3Damage + this.powerTokens;
+        console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage.");
+        opponent.takeDamage(totalDamage, drain);
     }
     attack4(drain) {
-        
-        if (opponent.countersRed) {
-            opponent.counter();
-        } else {
-            let totalDamage = this.attack4Damage + this.powerTokens;
-            console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage.");
-            opponent.takeDamage(totalDamage, drain);
-        }
+        let totalDamage = this.attack4Damage + this.powerTokens;
+        console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage.");
+        opponent.takeDamage(totalDamage, drain);
     }
     charge() {
         opponent.reactToCharge();
