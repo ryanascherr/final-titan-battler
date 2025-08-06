@@ -1,4 +1,4 @@
-import { titan, challenger } from "./script.js";
+import { titan, challenger, playerOneBench, playerTwoBench, displayChampion } from "./script.js";
 let opponent;
 let delayTime = 1000;
 
@@ -31,6 +31,7 @@ export class Champion {
         this.poisonTokens = 0;
         this.dodgeTokens = 0;
         this.nameOfPosition = "";
+        this.ownedBy = "";
     }
     startFight(index) {
     }
@@ -79,24 +80,31 @@ export class Champion {
         setTimeout(() => {
             switch (dieRoll) {
                 case 1:
+                    console.log(this.name + " rolls their 🟦 attack.");
                     this.attack1();
                     break;
                 case 2:
+                    console.log(this.name + " rolls their 🟩 attack.");
                     this.attack2();
                     break;
                 case 3:
+                    console.log(this.name + " rolls their 🟨 attack.");
                     this.attack3();
                     break;
                 case 4:
+                    console.log(this.name + " rolls their 🟥 attack.");
                     this.attack4();
                     break;
                 case 5:
+                    console.log(this.name + " rolls a CHARGE.");
                     this.charge();
                     break;
                 case 6:
+                    console.log(this.name + " rolls a miss.");
                     this.miss();
                     break;
                 default:
+                    console.log(this.name + " rolls a miss.");
                     this.miss();
                     break;
             }      
@@ -116,7 +124,6 @@ export class Champion {
         }
     }
     attack1(drain) {
-        console.log(this.name + " rolls their BLUE attack.");
         if (opponent.countersBlue) {
             opponent.counter();
         } else {
@@ -126,7 +133,6 @@ export class Champion {
         }
     }
     attack2(drain) {
-        console.log(this.name + " rolls their GREEN attack.");
         if (opponent.countersGreen) {
             opponent.counter();
         } else {
@@ -136,7 +142,6 @@ export class Champion {
         }
     }
     attack3(drain) {
-        console.log(this.name + " rolls their YELLOW attack.");
         if (opponent.countersYellow) {
             opponent.counter();
         } else {
@@ -146,7 +151,7 @@ export class Champion {
         }
     }
     attack4(drain) {
-        console.log(this.name + " rolls their RED attack.");
+        
         if (opponent.countersRed) {
             opponent.counter();
         } else {
@@ -156,15 +161,15 @@ export class Champion {
         }
     }
     charge() {
-        console.log(this.name + " rolls a CHARGE.");
         opponent.reactToCharge();
         if (!this.isCharged) {
             this.isCharged = true;
             $(`.js_${this.nameOfPosition}-charge`).addClass(`js_${this.nameOfPosition}-charge--bright`);
 
             if (this.isAlive & opponent.isAlive) {
-                console.log(this.name + " is charged. Rolling again...");
-                this.rollDie();
+                console.log(this.name + " is charged.");
+                // console.log(this.name + " is charged. Rolling again...");
+                // this.rollDie();
             }
         } else {
             console.log(this.name + " activates their ultimate ability.");
@@ -176,7 +181,7 @@ export class Champion {
     reactToCharge() {
     }
     miss() {
-        console.log(this.name + " misses.")
+        
     }
     takeDamage(damage, drain, isSteelFortress) {
         damage = this.factorArmor(damage);
@@ -247,7 +252,7 @@ export class Champion {
 
         if (this.currentHealth > this.maxHealth) this.currentHealth = this.maxHealth;
         
-        console.log(this.name + " gains " + health + " health. " + this.name + " has " + this.currentHealth + " remaining.");
+        console.log(this.name + " gains " + health + " health. Their current health is " + this.currentHealth + "/" + this.maxHealth + ".");
 
         this.updateHealthDisplay();
     }
@@ -339,6 +344,7 @@ export class Champion {
             opponent = titan;
         }
         opponent.win();
+        // this.pickNewChampion();
     }
     win () {
         console.log(this.name + " wins.");
@@ -348,6 +354,42 @@ export class Champion {
             console.log(this.name + " becomes the Titan.");
         }
     }
+    // pickNewChampion() {
+    //     console.log(this.ownedBy);
+    //     console.log(typeof(challenger))
+    //     let abc;
+    //     if (this.ownedBy === "Player 1") {
+    //         console.log(playerOneBench);
+
+    //         let randomNumber = Math.floor(Math.random() * playerOneBench.length);
+    //         let nextChampion = playerOneBench[randomNumber];
+
+    //         console.log(nextChampion);
+
+    //         abc = nextChampion;
+    //         abc.isTitan = false;
+    //         abc.nameOfPosition = "challenger";
+    //         abc.ownedBy = "Player 1";
+
+    //         displayChampion(nextChampion, "challenger");
+    //     }
+
+    //     if (this.ownedBy === "Player 2") {
+    //         console.log(playerTwoBench);
+
+    //         let randomNumber = Math.floor(Math.random() * playerOneBench.length);
+    //         let nextChampion = playerTwoBench[randomNumber];
+
+    //         console.log(nextChampion);
+
+    //         abc = nextChampion;
+    //         abc.isTitan = false;
+    //         abc.nameOfPosition = "challenger";
+    //         abc.ownedBy = "Player 2";
+
+    //         displayChampion(nextChampion, "challenger");
+    //     }
+    // }
     endFight(index) {
 
     }

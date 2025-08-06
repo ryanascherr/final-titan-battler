@@ -3,6 +3,7 @@ let opponent;
 
 //TODO: Test all drain champions
 //TODO: Remove all forced roll agains
+//TODO: Counter should stop rerolls
 
 const supabaseURL = 'https://jjdtikulxocedonohrpf.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpqZHRpa3VseG9jZWRvbm9ocnBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA0OTI1NjEsImV4cCI6MjA1NjA2ODU2MX0.7H56TLX1hFXqCJBgDHRU5Evj7gPtdXYUugtyPBfZQuI';
@@ -25,8 +26,8 @@ class Acranydra extends Champion {
         opponent = this.identifyOpponent();
         console.log(this.name + " rolls their GREEN attack.");
         opponent.gainPoisonTokens(1);
-        console.log(this.name + " is rolling again...");
-        this.rollDie();
+        // console.log(this.name + " is rolling again...");
+        // this.rollDie();
     }
     activateUltimate() {
         opponent = this.identifyOpponent();
@@ -41,14 +42,14 @@ class ArchangelGabriel extends Champion {
     attack1() {
         console.log(this.name + " rolls their BLUE attack.")
         this.gainPowerTokens(1);
-        console.log(this.name + " is rolling again...");
-        this.rollDie();
+        // console.log(this.name + " is rolling again...");
+        // this.rollDie();
     }
     activateUltimate() {
         this.gainPowerTokens(2);
         this.isCharged = false;
-        console.log(this.name + " is rolling again...");
-        this.rollDie();
+        // console.log(this.name + " is rolling again...");
+        // this.rollDie();
     }
 };
 let archangelGabrielObject = champions[11];
@@ -61,8 +62,8 @@ class Azurian extends Champion {
     }
     attack1() {
         super.attack1();
-        console.log(this.name + " is rolling again...");
-        this.rollDie();
+        // console.log(this.name + " is rolling again...");
+        // this.rollDie();
     }
     attack4() {
         let drain = true;
@@ -85,8 +86,8 @@ class Cerberus extends Champion {
     }
     attack4() {
         super.attack4();
-        console.log(this.name + " is rolling again...");
-        this.rollDie();
+        // console.log(this.name + " is rolling again...");
+        // this.rollDie();
     }
     activateUltimate() {
         opponent = this.identifyOpponent();
@@ -105,15 +106,15 @@ class CrimsonKnight extends Champion {
     attack1() {
         super.attack1();
         if (this.isInUltimateForm) {
-            console.log(this.name + " is rolling again because of their Ultimate Form.")
-            this.rollDie();
+            // console.log(this.name + " is rolling again because of their Ultimate Form.")
+            // this.rollDie();
         }
     }
     attack2() {
         super.attack2();
         if (this.isInUltimateForm) {
-            console.log(this.name + " is rolling again because of their Ultimate Form.")
-            this.rollDie();
+            // console.log(this.name + " is rolling again because of their Ultimate Form.")
+            // this.rollDie();
         }
     }
 };
@@ -137,8 +138,8 @@ class CursedPirate extends Champion {
             super.attack2();
         }
 
-        console.log(this.name + " is rolling again...");
-        this.rollDie();
+        // console.log(this.name + " is rolling again...");
+        // this.rollDie();
     }
     attack3() {
         if (this.isInUltimateForm) {
@@ -180,8 +181,8 @@ class Dragonbane extends Champion {
         } else {
             console.log(this.name + "'s Essence Drain does not activate.")
         }
-        console.log("Rolling again...");
-        this.rollDie();
+        // console.log("Rolling again...");
+        // this.rollDie();
     }
     activateUltimate() {
         opponent = this.identifyOpponent();
@@ -256,8 +257,8 @@ class Gunslinger extends Champion {
     }
     attack2() {
         super.attack2();
-        console.log(this.name + " is rolling again...");
-        this.rollDie();
+        // console.log(this.name + " is rolling again...");
+        // this.rollDie();
     }
     activateUltimate() {
         opponent = this.identifyOpponent();
@@ -281,8 +282,8 @@ class Hornet extends Champion {
         } else {
             console.log(this.name + "'s Bzzzzzzzzzzzzz does not activate.");
         }
-        console.log("Rolling again...");
-        this.rollDie();
+        // console.log("Rolling again...");
+        // this.rollDie();
     }
     activateUltimate() {
         opponent = this.identifyOpponent();
@@ -313,8 +314,8 @@ class Hunter extends Champion {
     }
     attack2() {
         super.attack2();
-        console.log(this.name + " is rolling again...");
-        this.rollDie();
+        // console.log(this.name + " is rolling again...");
+        // this.rollDie();
     }
 };
 let hunterObject = champions[7];
@@ -342,13 +343,13 @@ export let hydra = new Hydra(hydraObject.name, hydraObject.flavorText, hydraObje
 class Impulse extends Champion {
     attack1() {
         super.attack1();
-        console.log(this.name + " is rolling again...");
-        this.rollDie();
+        // console.log(this.name + " is rolling again...");
+        // this.rollDie();
     }
     attack2() {
         super.attack2();
-        console.log(this.name + " is rolling again...");
-        this.rollDie();
+        // console.log(this.name + " is rolling again...");
+        // this.rollDie();
     }
     activateUltimate() {
         this.attack3();
@@ -368,8 +369,8 @@ class JadeOgre extends Champion {
     }
     attack1() {
         super.attack1();
-        console.log(this.name + " is rolling again...");
-        this.rollDie();
+        // console.log(this.name + " is rolling again...");
+        // this.rollDie();
     }
     attack4() {
         let drain = true;
@@ -389,14 +390,7 @@ class Kitsune extends Champion {
     countersGreen = true;
     counter() {
         super.counter();
-        console.log(this.name + " gains a Charge.");
-        if (!this.isCharged) {
-            this.isCharged = true;
-        } else {
-            console.log(this.name + " activates their ultimate ability.");
-            this.activateUltimate();
-            this.isCharged = false;
-        }
+        this.charge();
     }
     activateUltimate() {
         opponent = this.identifyOpponent();
@@ -457,7 +451,7 @@ class Sobek extends Champion {
         if (!this.isAlive) return;
 
         opponent = this.identifyOpponent();
-        console.log(this.name + " uses Nile's Fury to deal " + damage + " back to " + opponent.name + ".");
+        console.log(this.name + " uses Nile's Fury to deal " + damage + " damage back to " + opponent.name + ".");
         opponent.takeDamage(damage);
     }
 
@@ -537,13 +531,13 @@ export let theThreeMusketeers = new TheThreeMusketeers(theThreeMusketeersObject.
 class TinyTerror extends Champion {
     attack2() {
         super.attack2();
-        console.log(this.name + " is rolling again...");
-        this.rollDie();
+        // console.log(this.name + " is rolling again...");
+        // this.rollDie();
     }
     attack3() {
         super.attack3();
-        console.log(this.name + " is rolling again...");
-        this.rollDie();
+        // console.log(this.name + " is rolling again...");
+        // this.rollDie();
     }
     activateUltimate() {
         opponent = this.identifyOpponent();
@@ -558,6 +552,7 @@ class TinyTerror extends Champion {
 let tinyTerrorObject = champions[36];
 export let tinyTerror = new TinyTerror(tinyTerrorObject.name, tinyTerrorObject.flavorText, tinyTerrorObject.health, tinyTerrorObject.speed, tinyTerrorObject.armor, tinyTerrorObject.attack1, tinyTerrorObject.attack2, tinyTerrorObject.attack3, tinyTerrorObject.attack4, true);
 
+//TODO: Drain overhealed
 class UglyDuckling extends Champion {
     attack1() {
         opponent = this.identifyOpponent();

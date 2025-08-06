@@ -2,6 +2,8 @@ import { arrayOfChampions } from "./champions.js";
 
 export let titan;
 export let challenger;
+export let playerOneBench = [];
+export let playerTwoBench = [];
 
 populateDropdowns();
 function populateDropdowns() {
@@ -28,19 +30,31 @@ $(".js_select-champions").on('click', function() {
     let titanName = getTitanName();
     let challengerName = getChallengerName();
 
-    arrayOfChampions.forEach(function(champion) {
+    console.log(arrayOfChampions);
+
+    arrayOfChampions.forEach(function(champion, index) {
         if (champion.name == titanName) {
             titan = champion;
             titan.isTitan = true;
             titan.nameOfPosition = "titan";
+            titan.ownedBy = "Player 1";
+            arrayOfChampions.splice(index, 1);
         }
         if (champion.name == challengerName) {
             challenger = champion;
             challenger.isTitan = false;
             challenger.nameOfPosition = "challenger";
+            challenger.ownedBy = "Player 2";
+            arrayOfChampions.splice(index, 1);
         }
     });
 
+    console.log(arrayOfChampions);
+
+    pickBench(playerOneBench, "Player 1");
+    pickBench(playerTwoBench, "Player 2");
+    
+    console.log(playerOneBench, playerTwoBench);
     displayChampions();
 });
 
@@ -52,6 +66,15 @@ function getTitanName() {
 function getChallengerName() {
     let challengerDropdown = $("#challenger-select");
     return challengerDropdown.val();
+}
+
+function pickBench(benchArray, player) {
+    for (let index = 0; index < 3; index++) {
+        let randomNumber = Math.floor(Math.random() * arrayOfChampions.length-1) + 1;
+        arrayOfChampions[randomNumber].ownedBy = player;
+        benchArray.push(arrayOfChampions[randomNumber]);
+        arrayOfChampions.splice(randomNumber, 1);
+    }
 }
 
 function displayChampions() {
@@ -66,11 +89,12 @@ function displayChampions() {
     startFight();
 }
 
-function displayChampion(champion, nameOfPosition) {
+export function displayChampion(champion, nameOfPosition) {
     let name = champion.name;
     name = name.toLowerCase();
     name = name.replace(/ /g, "_");
-    $(`.js_${nameOfPosition}-container`).prepend(`<img class="champion-holder__card" src="./img/champion_${name}.jpg">`);
+    $(`.js_${nameOfPosition}-card`).attr("src",`./img/champion_${name}.jpg`);
+    // $(`.js_${nameOfPosition}-container`).prepend(`<img class="champion-holder__card" src="./img/champion_${name}.jpg">`);
     champion.updateHealthDisplay();
 }
 
