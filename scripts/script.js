@@ -30,6 +30,8 @@ $(".js_select-champions").on('click', function() {
     let titanName = getTitanName();
     let challengerName = getChallengerName();
 
+    console.log(titanName, challengerName);
+
     console.log(arrayOfChampions);
 
     arrayOfChampions.forEach(function(champion, index) {
@@ -38,23 +40,23 @@ $(".js_select-champions").on('click', function() {
             titan.isTitan = true;
             titan.nameOfPosition = "titan";
             titan.ownedBy = "Player 1";
-            arrayOfChampions.splice(index, 1);
+            // arrayOfChampions.splice(index, 1);
         }
         if (champion.name == challengerName) {
             challenger = champion;
             challenger.isTitan = false;
             challenger.nameOfPosition = "challenger";
             challenger.ownedBy = "Player 2";
-            arrayOfChampions.splice(index, 1);
+            // arrayOfChampions.splice(index, 1);
         }
     });
 
     console.log(arrayOfChampions);
 
-    pickBench(playerOneBench, "Player 1");
-    pickBench(playerTwoBench, "Player 2");
+    // pickBench(playerOneBench, "Player 1");
+    // pickBench(playerTwoBench, "Player 2");
     
-    console.log(playerOneBench, playerTwoBench);
+    // console.log(playerOneBench, playerTwoBench);
     displayChampions();
 });
 
@@ -78,6 +80,8 @@ function pickBench(benchArray, player) {
 }
 
 function displayChampions() {
+    console.log(titan);
+    console.log(challenger);
     console.log(titan.name.toUpperCase() + " VS " + challenger.name.toUpperCase());
 
     $(".js_fight-container").removeClass("hide");
@@ -90,6 +94,12 @@ function displayChampions() {
 }
 
 export function displayChampion(champion, nameOfPosition) {
+    titanRollBtn.css("pointer-events", "none");
+    $(".js_titan-roll-btn img").css("filter", "grayscale()");
+
+    challengerRollBtn.css("pointer-events", "none");
+    $(".js_challenger-roll-btn img").css("filter", "grayscale()");
+
     let name = champion.name;
     name = name.toLowerCase();
     name = name.replace(/ /g, "_");
@@ -98,20 +108,55 @@ export function displayChampion(champion, nameOfPosition) {
     champion.updateHealthDisplay();
 }
 
-$(".js_titan-roll-btn").on('click', function() {
+let titanStartTurnBtn = $(".js_titan-start-turn-btn");
+let titanRollBtn = $(".js_titan-roll-btn");
+let challengerStartTurnBtn = $(".js_challenger-start-turn-btn");
+let challengerRollBtn = $(".js_challenger-roll-btn");
+
+$(".js_titan-start-turn-btn").on('click', function() {
+    titanStartTurnBtn.css("opacity", ".5");
+    titanStartTurnBtn.css("pointer-events", "none");
+    titanStartTurnBtn.text("My Turn");
+
+    challengerStartTurnBtn.css("opacity", "1");
+    challengerStartTurnBtn.css("pointer-events", "auto");
+    challengerStartTurnBtn.text("Start Turn");
+
+    titanRollBtn.css("pointer-events", "auto");
+    $(".js_titan-roll-btn img").css("filter", "none");
+
+    challengerRollBtn.css("pointer-events", "none");
+    $(".js_challenger-roll-btn img").css("filter", "grayscale()");
+
     titan.identifyOpponent();
     titan.startTurn();
-    // for (let i = 0; i <= titan.actionTokens; i++) {
-        titan.rollDie();
-    // }
+});
+
+$(".js_challenger-start-turn-btn").on('click', function() {
+    challengerStartTurnBtn.css("opacity", ".5");
+    challengerStartTurnBtn.css("pointer-events", "none");
+    challengerStartTurnBtn.text("My Turn");
+
+    titanStartTurnBtn.css("opacity", "1");
+    titanStartTurnBtn.css("pointer-events", "auto");
+    titanStartTurnBtn.text("Start Turn");
+
+    challengerRollBtn.css("pointer-events", "auto");
+    $(".js_challenger-roll-btn img").css("filter", "none");
+
+    titanRollBtn.css("pointer-events", "none");
+    $(".js_titan-roll-btn img").css("filter", "grayscale()");
+
+    challenger.identifyOpponent();
+    challenger.startTurn();
+});
+
+$(".js_titan-roll-btn").on('click', function() {
+    titan.rollDie();
 });
 
 $(".js_challenger-roll-btn").on('click', function() {
-    challenger.identifyOpponent();
-    challenger.startTurn();
-    // for (let i = 0; i <= challenger.actionTokens; i++) {
-        challenger.rollDie();
-    // }
+    challenger.rollDie();
 });
 
 $(".js_start-fight-btn").on('click', function() {

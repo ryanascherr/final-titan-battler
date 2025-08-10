@@ -146,7 +146,6 @@ export class Champion {
         }
     }
     checkForCounter(doesCounter) {
-        console.log(doesCounter);
         if (doesCounter) {
             return true;
         } else {

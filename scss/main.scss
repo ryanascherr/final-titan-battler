@@ -84,6 +84,14 @@ select:hover {
         max-width: 400px;
     }
 
+    &__start-turn-btn {
+        margin-top: 1rem;
+    }
+
+    &__die {
+        pointer-events: none;
+    }
+
     &__health {
         display: flex;
         align-items: center;

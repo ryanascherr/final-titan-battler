@@ -72,6 +72,12 @@ select:hover {
   width: 100%;
   max-width: 400px;
 }
+.champion-holder__start-turn-btn {
+  margin-top: 1rem;
+}
+.champion-holder__die {
+  pointer-events: none;
+}
 .champion-holder__health {
   display: flex;
   align-items: center;
