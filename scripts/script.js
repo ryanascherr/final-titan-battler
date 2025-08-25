@@ -54,9 +54,9 @@ $(".js_select-champions").on('click', function() {
     let titanName = getTitanName();
     let challengerName = getChallengerName();
 
-    console.log(titanName, challengerName);
+    // console.log(titanName, challengerName);
 
-    console.log(arrayOfChampions);
+    // console.log(arrayOfChampions);
 
     arrayOfChampions.forEach(function(champion, index) {
         if (champion.name == titanName) {
@@ -75,7 +75,7 @@ $(".js_select-champions").on('click', function() {
         }
     });
 
-    console.log(arrayOfChampions);
+    // console.log(arrayOfChampions);
 
     // pickBench(playerOneBench, "Player 1");
     // pickBench(playerTwoBench, "Player 2");
