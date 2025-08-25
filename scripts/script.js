@@ -5,6 +5,30 @@ export let challenger;
 export let playerOneBench = [];
 export let playerTwoBench = [];
 
+document.querySelector("body").addEventListener('click', function(event) {
+    if (event.target.closest('.js_choose-img')) {
+        let clickedElem = event.srcElement;
+        clickedElem.classList.add("highlight")
+    }
+});
+
+
+populateChoices();
+function populateChoices() {
+    arrayOfChampions.forEach(function(champion, index) {
+        let name = champion.name;
+        name = name.toLowerCase();
+        name = name.replace(/ /g, "_");
+
+        let newImg = document.createElement("img");
+        $(newImg).attr("src", `./img/champion_${name}.jpg`);
+        $(newImg).attr("data-name", champion.name);
+        $(newImg).addClass("choose__img js_choose-img");
+
+        $(".choose").append(newImg);
+    })
+}
+
 populateDropdowns();
 function populateDropdowns() {
     let titanDropdown = $("#titan-select");
@@ -80,9 +104,13 @@ function pickBench(benchArray, player) {
 }
 
 function displayChampions() {
-    console.log(titan);
-    console.log(challenger);
     console.log(titan.name.toUpperCase() + " VS " + challenger.name.toUpperCase());
+
+    titanRollBtn.css("pointer-events", "none");
+    $(".js_titan-roll-btn img").css("filter", "grayscale()");
+
+    challengerRollBtn.css("pointer-events", "none");
+    $(".js_challenger-roll-btn img").css("filter", "grayscale()");
 
     $(".js_fight-container").removeClass("hide");
     $(".js_start-fight-btn-container").removeClass("hide");
@@ -94,11 +122,6 @@ function displayChampions() {
 }
 
 export function displayChampion(champion, nameOfPosition) {
-    titanRollBtn.css("pointer-events", "none");
-    $(".js_titan-roll-btn img").css("filter", "grayscale()");
-
-    challengerRollBtn.css("pointer-events", "none");
-    $(".js_challenger-roll-btn img").css("filter", "grayscale()");
 
     let name = champion.name;
     name = name.toLowerCase();

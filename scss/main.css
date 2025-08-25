@@ -1,3 +1,21 @@
+.highlight {
+  border: 5px solid blue;
+}
+
+.choose {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 2rem;
+  padding: 2rem;
+}
+.choose img {
+  width: 100%;
+  cursor: pointer;
+}
+.choose img:hover {
+  transform: scale(1.1);
+}
+
 * {
   box-sizing: border-box;
   padding: 0;
