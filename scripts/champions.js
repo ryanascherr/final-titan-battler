@@ -1,10 +1,11 @@
 import { Champion } from "./champion.js";
 let opponent;
 
+let historyText = document.querySelector(".js_history-text");
+
 //TODO: Test all drain champions
 //TODO: Counter should stop rerolls
 //TODO: Remove console logs of attack rolls
-//TODO: Manual way to take poison damage? Shouldn't be every roll
 
 const supabaseURL = 'https://jjdtikulxocedonohrpf.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpqZHRpa3VseG9jZWRvbm9ocnBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA0OTI1NjEsImV4cCI6MjA1NjA2ODU2MX0.7H56TLX1hFXqCJBgDHRU5Evj7gPtdXYUugtyPBfZQuI';
@@ -173,10 +174,14 @@ class Dragonbane extends Champion {
         if (mySpeed > opponentSpeed || this.isInUltimateForm) {
             let drain = true;
             let damage = 10 + this.powerTokens;
-            console.log(this.name + " uses Essence Drain to attack " + opponent.name + " for " + damage + " damage.")
+
+            console.log(this.name + " uses Essence Drain to attack " + opponent.name + " for " + damage + " damage.");
+            $(historyText).append("<p>" + this.name + " uses Essence Drain to attack " + opponent.name + " for " + damage + " damage.</p><hr>");
+
             opponent.takeDamage(damage, drain);
         } else {
-            console.log(this.name + "'s Essence Drain does not activate.")
+            console.log(this.name + "'s Essence Drain does not activate.");
+            $(historyText).append("<p>" + this.name + "'s Essence Drain does not activate.</p><hr>");
         }
         // console.log("Rolling again...");
         // this.rollDie();
@@ -187,7 +192,10 @@ class Dragonbane extends Champion {
         this.gainUltimateForm();
         let drain = true;
         let damage = 10 + this.powerTokens;
-        console.log(this.name + " uses Essence Drain to attack " + opponent.name + " for " + damage + " damage.")
+
+        console.log(this.name + " uses Essence Drain to attack " + opponent.name + " for " + damage + " damage.");
+        $(historyText).append("<p>" + this.name + " uses Essence Drain to attack " + opponent.name + " for " + damage + " damage.</p><hr>");
+
         opponent.takeDamage(damage, drain);
     }
 };
@@ -205,6 +213,8 @@ class EvilDjinn extends Champion {
     }
     reactToCharge() {
         console.log(this.name + "'s Infernal Pact activates.");
+        $(historyText).append("<p>" + this.name + "'s Infernal Pact activates.</p><hr>");
+
         this.gainActionTokens(2);
     }
     activateUltimate() {
@@ -237,6 +247,7 @@ class Fang extends Champion {
         let drain = true;
 
         console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage.");
+        $(historyText).append("<p>" + this.name + " attacks " + opponent.name + " for " + totalDamage + " damage.</p><hr>");
 
         opponent.takeDamage(totalDamage, drain);
     }
@@ -248,7 +259,10 @@ class Gunslinger extends Champion {
     startFight() {
         super.startFight();
         opponent = this.identifyOpponent();
+
         console.log(this.name + " uses Quick Draw and deals 3 damage.");
+        $(historyText).append("<p>" + this.name + " uses Quick Draw and deals 3 damage.</p><hr>");
+
         opponent.takeDamage(3);
     }
     attack2() {
@@ -277,9 +291,12 @@ class Hornet extends Champion {
         } else {
             if (this.dodgeTokens === 0) {
                 console.log(this.name + "'s Bzzzzzzzzzzzzz activates.");
+                $(historyText).append("<p>" + this.name + "'s Bzzzzzzzzzzzzz activates.</p><hr>");
+
                 this.gainDodgeTokens(2);
             } else {
                 console.log(this.name + "'s Bzzzzzzzzzzzzz does not activate.");
+                $(historyText).append("<p>" + this.name + "'s Bzzzzzzzzzzzzz does not activate.</p><hr>");
             }
             // console.log("Rolling again...");
             // this.rollDie();
@@ -299,6 +316,8 @@ class Hunter extends Champion {
     startFight() {
         if (!this.isTitan) {
             console.log(this.name + " is the challenger. Their damage and speed are increased.");
+            $(historyText).append("<p>" + this.name + " is the challenger. Their damage and speed are increased.</p><hr>");
+
             this.attack1Damage = 4;
             this.attack2Damage = 4;
             this.attack3Damage = 6;
@@ -330,7 +349,10 @@ class Hydra extends Champion {
     activateUltimate() {
         opponent = this.identifyOpponent();
         let totalDamage = 6 + this.powerTokens;
+
         console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage.");
+        $(historyText).append("<p>" + this.name + " attacks " + opponent.name + " for " + totalDamage + " damage.</p><hr>");
+
         opponent.takeDamage(totalDamage);
         if (!opponent.isAlive) {
             this.gainActionTokens(1);
@@ -363,7 +385,10 @@ class JadeOgre extends Champion {
     startFight() {
         super.startFight();
         opponent = this.identifyOpponent();
+
         console.log(this.name + " uses Blade Wind and sets " + opponent.name + "'s health to 5.");
+        $(historyText).append("<p>" + this.name + " uses Blade Wind and sets " + opponent.name + "'s health to 5.</p><hr>");
+
         opponent.currentHealth = 5;
         opponent.updateHealthDisplay();
     }
@@ -406,12 +431,18 @@ class KuNan extends Champion {
         opponent = this.identifyOpponent();
         let drain = true;
         let damage = 6 + this.powerTokens;
-        console.log(this.name + " attacks " + opponent.name + " for " + damage + " damage.")
+
+        console.log(this.name + " attacks " + opponent.name + " for " + damage + " damage.");
+        $(historyText).append("<p>" + this.name + " attacks " + opponent.name + " for " + damage + " damage.</p><hr>");
+
         opponent.takeDamage(damage, drain);
     }
     win() {
         super.win();
+
         console.log(this.name + "'s Iron Will activates.");
+        $(historyText).append("<p>" + this.name + "'s Iron Will activates.</p><hr>");
+
         this.gainHealth(2);
         this.gainPowerTokens(1);
     }
@@ -451,7 +482,10 @@ class Sobek extends Champion {
         if (!this.isAlive) return;
 
         opponent = this.identifyOpponent();
+
         console.log(this.name + " uses Nile's Fury to deal " + damage + " damage back to " + opponent.name + ".");
+        $(historyText).append("<p>" + this.name + " uses Nile's Fury to deal " + damage + " damage back to " + opponent.name + ".</p><hr>");
+
         opponent.takeDamage(damage);
     }
 
@@ -459,7 +493,10 @@ class Sobek extends Champion {
         opponent = this.identifyOpponent();
         let drain = true;
         let totalDamage = 6 + this.powerTokens;
+
         console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage.");
+        $(historyText).append("<p>" + this.name + " attacks " + opponent.name + " for " + totalDamage + " damage.</p><hr>");
+
         opponent.takeDamage(totalDamage, drain);
     }
     attack4() {
@@ -480,7 +517,10 @@ class SteelForce extends Champion {
         opponent = this.identifyOpponent();
         let drain = true;
         let totalDamage = 4 + this.powerTokens;
+
         console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage.");
+        $(historyText).append("<p>" + this.name + " attacks " + opponent.name + " for " + totalDamage + " damage.</p><hr>");
+
         opponent.takeDamage(totalDamage, drain);
     }
 };
@@ -495,7 +535,9 @@ class TheGreatAbomination extends Champion {
         opponent = this.identifyOpponent();
         opponent.defeated();
         this.poisonTokens = 0;
+
         console.log(this.name + " has " + this.poisonTokens + " Poison Token(s).");
+        $(historyText).append("<p>" + this.name + " has " + this.poisonTokens + " Poison Token(s).</p><hr>");
 
         if (this.isTitan) {
             $(".js_titan-tokens-poison").empty();
@@ -543,7 +585,10 @@ class TinyTerror extends Champion {
         opponent = this.identifyOpponent();
         let drain = true;
         let totalDamage = 8 + this.powerTokens;
+
         console.log(this.name + " attacks " + opponent.name + " for " + totalDamage + " damage.");
+        $(historyText).append("<p>" + this.name + " attacks " + opponent.name + " for " + totalDamage + " damage.</p><hr>");
+
         opponent.takeDamage(totalDamage, drain);
 
         this.gainPowerTokens(1);
@@ -558,6 +603,7 @@ class UglyDuckling extends Champion {
         opponent = this.identifyOpponent();
         if (this.currentHealth <= 6) {
             console.log(this.name + "'s Smaaaash! activates.");
+            $(historyText).append("<p>" + this.name + "'s Smaaaash! activates.</p><hr>");
             if (this.isInUltimateForm) {
                 this.attack1Damage = 8;
             } else {
@@ -572,6 +618,7 @@ class UglyDuckling extends Champion {
     attack2() {
         if (this.currentHealth <= 6) {
             console.log(this.name + "'s Smaaaash! activates.");
+            $(historyText).append("<p>" + this.name + "'s Smaaaash! activates.</p><hr>");
             if (this.isInUltimateForm) {
                 this.attack2Damage = 9;
             } else {
@@ -585,6 +632,7 @@ class UglyDuckling extends Champion {
     attack3() {
         if (this.currentHealth <= 6) {
             console.log(this.name + "'s Smaaaash! activates.");
+            $(historyText).append("<p>" + this.name + "'s Smaaaash! activates.</p><hr>");
             if (this.isInUltimateForm) {
                 this.attack3Damage = 10;
             } else {
@@ -598,6 +646,7 @@ class UglyDuckling extends Champion {
     attack4() {
         if (this.currentHealth <= 6) {
             console.log(this.name + "'s Smaaaash! activates.");
+            $(historyText).append("<p>" + this.name + "'s Smaaaash! activates.</p><hr>");
             if (this.isInUltimateForm) {
                 this.attack4Damage = 11;
             } else {
@@ -626,7 +675,10 @@ class WinterWraith extends Champion {
             damageThreshold = 6;
         }
         if (opponent.currentHealth <= damageThreshold) {
+
             console.log(this.name + " uses Soul Harvest to defeat " + opponent.name + ".");
+            $(historyText).append("<p>" + this.name + " uses Soul Harvest to defeat " + opponent.name + "</p><hr>");
+
             opponent.defeated();
         }
     }

@@ -5,6 +5,28 @@ export let challenger;
 export let playerOneBench = [];
 export let playerTwoBench = [];
 
+let historyText = document.querySelector(".js_history-text");
+
+const callback = function(mutationsList, observer) {
+        for (const mutation of mutationsList) {
+            if (mutation.type === 'attributes') {
+                console.log('The ' + mutation.attributeName + ' attribute was modified.');
+            } else if (mutation.type === 'childList') {
+                console.log('A child node has been added or removed.');
+                historyText.lastElementChild.scrollIntoView(false);
+                // $(historyText).append("<hr>");
+            } else if (mutation.type === 'characterData') {
+                console.log('The text content of a node has changed.');
+            }
+        }
+};
+const observer = new MutationObserver(callback);
+const targetNode = historyText; // Or any other way to select the element
+const config = { attributes: true, childList: true, subtree: true, characterData: true };
+
+observer.observe(targetNode, config);
+
+
 document.querySelector("body").addEventListener('click', function(event) {
     if (event.target.closest('.js_choose-img')) {
         let clickedElem = event.srcElement;
@@ -105,6 +127,7 @@ function pickBench(benchArray, player) {
 
 function displayChampions() {
     console.log(titan.name.toUpperCase() + " VS " + challenger.name.toUpperCase());
+    $(historyText).append("<p>" + titan.name + " VS " + challenger.name + "</p><hr>");
 
     titanRollBtn.css("pointer-events", "none");
     $(".js_titan-roll-btn img").css("filter", "grayscale()");
@@ -187,6 +210,8 @@ $(".js_start-fight-btn").on('click', function() {
 
 function startFight() {
     console.log("-------START OF FIGHT-------");
+    $(historyText).append("<p>START OF FIGHT</p><hr>");
+
     if (challenger.speed >= titan.speed) {
         challenger.startFight();
         titan.startFight();

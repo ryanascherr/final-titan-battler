@@ -63,22 +63,30 @@ select:hover {
 }
 
 .fight-container {
-  display: flex;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: 1.5fr 1.5fr 1fr;
+  grid-gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 1rem;
 }
 
 .champion-container {
-  width: 50%;
-  padding: 1rem;
+  width: 100%;
   display: flex;
   flex-direction: column;
 }
 .champion-container--align-right {
   align-items: flex-end;
 }
+.champion-container--align-right .cube {
+  margin: 1.5rem 0 1.5rem 1.5rem;
+}
 .champion-container--align-left {
   align-items: flex-start;
+}
+.champion-container--align-left .cube {
+  margin: 1.5rem 1.5rem 1.5rem 0;
 }
 .champion-container__btn-container {
   width: 100%;
@@ -88,7 +96,6 @@ select:hover {
 
 .champion-holder__card {
   width: 100%;
-  max-width: 400px;
 }
 .champion-holder__start-turn-btn {
   margin-top: 1rem;
@@ -156,7 +163,6 @@ select:hover {
   width: var(--dice-size);
   height: var(--dice-size);
   transition: all 1s ease-out;
-  margin: 25px;
 }
 .cube img {
   width: 100%;
@@ -263,4 +269,16 @@ select:hover {
 
 .face-6-high {
   transform: rotateX(360deg) rotateY(540deg) rotateZ(0deg);
+}
+
+.history {
+  border: 2px solid black;
+  height: 500px;
+  width: 100%;
+  overflow-y: scroll;
+  padding: 0.5rem;
+}
+.history p {
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
 }/*# sourceMappingURL=main.css.map */
